@@ -2387,6 +2387,14 @@ class GatewayRunner:
                 except Exception as exc:
                     logger.debug("@ context reference expansion failed: %s", exc)
 
+            # Start persistent typing indicator before agent runs
+            try:
+                _typing_adapter = self.adapters.get(source.platform)
+                if _typing_adapter and hasattr(_typing_adapter, "send_typing"):
+                    await _typing_adapter.send_typing(source.chat_id)
+            except Exception:
+                pass
+
             # Run the agent
             agent_result = await self._run_agent(
                 message=message_text,
