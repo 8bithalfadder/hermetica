@@ -2387,14 +2387,6 @@ class GatewayRunner:
                 except Exception as exc:
                     logger.debug("@ context reference expansion failed: %s", exc)
 
-            # Start persistent typing indicator before agent runs
-            try:
-                _typing_adapter = self.adapters.get(source.platform)
-                if _typing_adapter and hasattr(_typing_adapter, "send_typing"):
-                    await _typing_adapter.send_typing(source.chat_id)
-            except Exception:
-                pass
-
             # Run the agent
             agent_result = await self._run_agent(
                 message=message_text,
@@ -2404,14 +2396,6 @@ class GatewayRunner:
                 session_id=session_entry.session_id,
                 session_key=session_key
             )
-
-            # Stop persistent typing indicator now that the agent is done
-            try:
-                _typing_adapter = self.adapters.get(source.platform)
-                if _typing_adapter and hasattr(_typing_adapter, "stop_typing"):
-                    await _typing_adapter.stop_typing(source.chat_id)
-            except Exception:
-                pass
 
             response = agent_result.get("final_response") or ""
             agent_messages = agent_result.get("messages", [])
@@ -2614,13 +2598,6 @@ class GatewayRunner:
             return response
             
         except Exception as e:
-            # Stop typing indicator on error too
-            try:
-                _err_adapter = self.adapters.get(source.platform)
-                if _err_adapter and hasattr(_err_adapter, "stop_typing"):
-                    await _err_adapter.stop_typing(source.chat_id)
-            except Exception:
-                pass
             logger.exception("Agent error in session %s", session_key)
             error_type = type(e).__name__
             error_detail = str(e)[:300] if str(e) else "no details available"
