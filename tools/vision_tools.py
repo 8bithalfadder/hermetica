@@ -328,7 +328,7 @@ async def vision_analyze_tool(
         # Read timeout from config.yaml (auxiliary.vision.timeout), default 30s.
         vision_timeout = 30.0
         try:
-            from hermes_cli.config import load_config
+            from hermetica_cli.config import load_config
             _cfg = load_config()
             _vt = _cfg.get("auxiliary", {}).get("vision", {}).get("timeout")
             if _vt is not None:

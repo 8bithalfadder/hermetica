@@ -1,5 +1,5 @@
 """
-Unified tool configuration for Hermes Agent.
+Unified tool configuration for Hermetica.
 
 `hermes tools` and `hermes setup tools` both enter this module.
 Select a platform → toggle toolsets on/off → for newly enabled tools
@@ -15,11 +15,11 @@ from typing import Dict, List, Optional, Set
 
 import os
 
-from hermes_cli.config import (
+from hermetica_cli.config import (
     load_config, save_config, get_env_value, save_env_value,
     get_hermes_home,
 )
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
@@ -110,7 +110,7 @@ def _get_effective_configurable_toolsets():
     """
     result = list(CONFIGURABLE_TOOLSETS)
     try:
-        from hermes_cli.plugins import get_plugin_toolsets
+        from hermetica_cli.plugins import get_plugin_toolsets
         result.extend(get_plugin_toolsets())
     except Exception:
         pass
@@ -120,7 +120,7 @@ def _get_effective_configurable_toolsets():
 def _get_plugin_toolset_keys() -> set:
     """Return the set of toolset keys provided by plugins."""
     try:
-        from hermes_cli.plugins import get_plugin_toolsets
+        from hermetica_cli.plugins import get_plugin_toolsets
         return {ts_key for ts_key, _, _ in get_plugin_toolsets()}
     except Exception:
         return set()
@@ -589,7 +589,7 @@ def _prompt_choice(question: str, choices: list, default: int = 0) -> int:
 
 def _prompt_toolset_checklist(platform_label: str, enabled: Set[str]) -> Set[str]:
     """Multi-select checklist of toolsets. Returns set of selected toolset keys."""
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     effective = _get_effective_configurable_toolsets()
 
@@ -1214,7 +1214,7 @@ def _configure_mcp_tools_interactive(config: dict):
     a per-server curses checklist.  Writes changes back as ``tools.exclude``
     entries in config.yaml.
     """
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     mcp_servers = config.get("mcp_servers") or {}
     if not mcp_servers:

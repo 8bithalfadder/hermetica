@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from hermes_cli.plugins_cmd import (
+from hermetica_cli.plugins_cmd import (
     _copy_example_files,
     _read_manifest,
     _repo_name_from_url,
@@ -212,7 +212,7 @@ class TestCmdInstall:
     """Test the install command."""
 
     def test_install_requires_identifier(self):
-        from hermes_cli.plugins_cmd import cmd_install
+        from hermetica_cli.plugins_cmd import cmd_install
         import argparse
 
         with pytest.raises(SystemExit):
@@ -220,7 +220,7 @@ class TestCmdInstall:
 
     @patch("hermes_cli.plugins_cmd._resolve_git_url")
     def test_install_validates_identifier(self, mock_resolve):
-        from hermes_cli.plugins_cmd import cmd_install
+        from hermetica_cli.plugins_cmd import cmd_install
 
         mock_resolve.side_effect = ValueError("Invalid identifier")
 
@@ -239,7 +239,7 @@ class TestCmdUpdate:
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     @patch("hermes_cli.plugins_cmd.subprocess.run")
     def test_update_git_pull_success(self, mock_run, mock_plugins_dir, mock_sanitize):
-        from hermes_cli.plugins_cmd import cmd_update
+        from hermetica_cli.plugins_cmd import cmd_update
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir.return_value = mock_plugins_dir_val
@@ -259,7 +259,7 @@ class TestCmdUpdate:
     @patch("hermes_cli.plugins_cmd._sanitize_plugin_name")
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     def test_update_plugin_not_found(self, mock_plugins_dir, mock_sanitize):
-        from hermes_cli.plugins_cmd import cmd_update
+        from hermetica_cli.plugins_cmd import cmd_update
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -284,7 +284,7 @@ class TestCmdRemove:
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     @patch("hermes_cli.plugins_cmd.shutil.rmtree")
     def test_remove_deletes_plugin(self, mock_rmtree, mock_plugins_dir, mock_sanitize):
-        from hermes_cli.plugins_cmd import cmd_remove
+        from hermetica_cli.plugins_cmd import cmd_remove
 
         mock_plugins_dir.return_value = MagicMock()
         mock_target = MagicMock()
@@ -298,7 +298,7 @@ class TestCmdRemove:
     @patch("hermes_cli.plugins_cmd._sanitize_plugin_name")
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     def test_remove_plugin_not_found(self, mock_plugins_dir, mock_sanitize):
-        from hermes_cli.plugins_cmd import cmd_remove
+        from hermetica_cli.plugins_cmd import cmd_remove
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -321,7 +321,7 @@ class TestCmdList:
 
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     def test_list_empty_plugins_dir(self, mock_plugins_dir):
-        from hermes_cli.plugins_cmd import cmd_list
+        from hermetica_cli.plugins_cmd import cmd_list
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -332,7 +332,7 @@ class TestCmdList:
     @patch("hermes_cli.plugins_cmd._plugins_dir")
     @patch("hermes_cli.plugins_cmd._read_manifest")
     def test_list_with_plugins(self, mock_read_manifest, mock_plugins_dir):
-        from hermes_cli.plugins_cmd import cmd_list
+        from hermetica_cli.plugins_cmd import cmd_list
 
         mock_plugins_dir_val = MagicMock()
         mock_plugin_dir = MagicMock()
@@ -355,7 +355,7 @@ class TestCopyExampleFiles:
     """Test example file copying."""
 
     def test_copies_example_files(self, tmp_path):
-        from hermes_cli.plugins_cmd import _copy_example_files
+        from hermetica_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock
 
         console = MagicMock()
@@ -371,7 +371,7 @@ class TestCopyExampleFiles:
         console.print.assert_called()
 
     def test_skips_existing_files(self, tmp_path):
-        from hermes_cli.plugins_cmd import _copy_example_files
+        from hermetica_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock
 
         console = MagicMock()
@@ -388,7 +388,7 @@ class TestCopyExampleFiles:
         assert real_file.read_text() == "existing: true"
 
     def test_handles_copy_error_gracefully(self, tmp_path):
-        from hermes_cli.plugins_cmd import _copy_example_files
+        from hermetica_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock, patch
 
         console = MagicMock()

@@ -36,7 +36,7 @@ Usage:
     hermes honcho migrate                  # Step-by-step migration guide: OpenClaw native → Hermes + Honcho
     hermes version             Show version
     hermes update              Update to latest version
-    hermes uninstall           Uninstall Hermes Agent
+    hermes uninstall           Uninstall Hermetica
     hermes acp                 Run as an ACP server for editor integration
     hermes sessions browse     Interactive session picker with search
 
@@ -56,8 +56,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Load .env from ~/.hermes/.env first, then project root as dev fallback.
 # User-managed env files should override stale shell exports on restart.
-from hermes_cli.config import get_hermes_home
-from hermes_cli.env_loader import load_hermes_dotenv
+from hermetica_cli.config import get_hermes_home
+from hermetica_cli.env_loader import load_hermes_dotenv
 load_hermes_dotenv(project_env=PROJECT_ROOT / '.env')
 
 
@@ -65,8 +65,8 @@ import logging
 import time as _time
 from datetime import datetime
 
-from hermes_cli import __version__, __release_date__
-from hermes_constants import OPENROUTER_BASE_URL
+from hermetica_cli import __version__, __release_date__
+from hermetica_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -91,13 +91,13 @@ def _relative_time(ts) -> str:
 
 def _has_any_provider_configured() -> bool:
     """Check if at least one inference provider is usable."""
-    from hermes_cli.config import get_env_path, get_hermes_home
-    from hermes_cli.auth import get_auth_status
+    from hermetica_cli.config import get_env_path, get_hermes_home
+    from hermetica_cli.auth import get_auth_status
 
     # Check env vars (may be set by .env or shell).
     # OPENAI_BASE_URL alone counts — local models (vLLM, llama.cpp, etc.)
     # often don't require an API key.
-    from hermes_cli.auth import PROVIDER_REGISTRY
+    from hermetica_cli.auth import PROVIDER_REGISTRY
 
     # Collect all provider env vars
     provider_env_vars = {"OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_TOKEN", "OPENAI_BASE_URL"}
@@ -399,7 +399,7 @@ def _session_browse_picker(sessions: list) -> Optional[str]:
 def _resolve_last_cli_session() -> Optional[str]:
     """Look up the most recent CLI session ID from SQLite. Returns None if unavailable."""
     try:
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         db = SessionDB()
         sessions = db.search_sessions(source="cli", limit=1)
         db.close()
@@ -418,7 +418,7 @@ def _resolve_session_by_name_or_id(name_or_id: str) -> Optional[str]:
     - Falls back to the other method if the first doesn't match.
     """
     try:
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         db = SessionDB()
 
         # Try as exact session ID first
@@ -476,7 +476,7 @@ def cmd_chat(args):
         print("  Run:  hermes setup")
         print()
 
-        from hermes_cli.setup import is_interactive_stdin, print_noninteractive_setup_guidance
+        from hermetica_cli.setup import is_interactive_stdin, print_noninteractive_setup_guidance
 
         if not is_interactive_stdin():
             print_noninteractive_setup_guidance(
@@ -497,7 +497,7 @@ def cmd_chat(args):
 
     # Start update check in background (runs while other init happens)
     try:
-        from hermes_cli.banner import prefetch_update_check
+        from hermetica_cli.banner import prefetch_update_check
         prefetch_update_check()
     except Exception:
         pass
@@ -542,7 +542,7 @@ def cmd_chat(args):
 
 def cmd_gateway(args):
     """Gateway management commands."""
-    from hermes_cli.gateway import gateway_command
+    from hermetica_cli.gateway import gateway_command
     gateway_command(args)
 
 
@@ -551,7 +551,7 @@ def cmd_whatsapp(args):
     import os
     import subprocess
     from pathlib import Path
-    from hermes_cli.config import get_env_value, save_env_value
+    from hermetica_cli.config import get_env_value, save_env_value
 
     print()
     print("⚕ WhatsApp Setup")
@@ -718,14 +718,14 @@ def cmd_whatsapp(args):
             print("    2. Send a message to the bot's WhatsApp number")
             print("    3. The agent will reply automatically")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Hermes Agent'")
+            print("  Tip: Agent responses are prefixed with '⚕ Hermetica'")
         else:
             print("  Next steps:")
             print("    1. Start the gateway:  hermes gateway")
             print("    2. Open WhatsApp → Message Yourself")
             print("    3. Type a message — the agent will reply")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Hermes Agent'")
+            print("  Tip: Agent responses are prefixed with '⚕ Hermetica'")
             print("  so you can tell them apart from your own messages.")
         print()
         print("  Or install as a service: hermes gateway install")
@@ -735,19 +735,19 @@ def cmd_whatsapp(args):
 
 def cmd_setup(args):
     """Interactive setup wizard."""
-    from hermes_cli.setup import run_setup_wizard
+    from hermetica_cli.setup import run_setup_wizard
     run_setup_wizard(args)
 
 
 def cmd_model(args):
     """Select default model — starts with provider selection, then model picker."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         resolve_provider, get_provider_auth_state, PROVIDER_REGISTRY,
         _prompt_model_selection, _save_model_choice, _update_config_for_provider,
         resolve_nous_runtime_credentials, fetch_nous_models, AuthError, format_auth_error,
         _login_nous,
     )
-    from hermes_cli.config import load_config, save_config, get_env_value, save_env_value
+    from hermetica_cli.config import load_config, save_config, get_env_value, save_env_value
 
     config = load_config()
     current_model = config.get("model")
@@ -938,8 +938,8 @@ def _prompt_provider_choice(choices):
 
 def _model_flow_openrouter(config, current_model=""):
     """OpenRouter provider: ensure API key, then pick model."""
-    from hermes_cli.auth import _prompt_model_selection, _save_model_choice, deactivate_provider
-    from hermes_cli.config import get_env_value, save_env_value
+    from hermetica_cli.auth import _prompt_model_selection, _save_model_choice, deactivate_provider
+    from hermetica_cli.config import get_env_value, save_env_value
 
     api_key = get_env_value("OPENROUTER_API_KEY")
     if not api_key:
@@ -958,7 +958,7 @@ def _model_flow_openrouter(config, current_model=""):
         print("API key saved.")
         print()
 
-    from hermes_cli.models import model_ids
+    from hermetica_cli.models import model_ids
     openrouter_models = model_ids()
 
     selected = _prompt_model_selection(openrouter_models, current_model=current_model)
@@ -970,7 +970,7 @@ def _model_flow_openrouter(config, current_model=""):
         _save_model_choice(selected)
 
         # Update config provider and deactivate any OAuth provider
-        from hermes_cli.config import load_config, save_config
+        from hermetica_cli.config import load_config, save_config
         cfg = load_config()
         model = cfg.get("model")
         if not isinstance(model, dict):
@@ -987,13 +987,13 @@ def _model_flow_openrouter(config, current_model=""):
 
 def _model_flow_nous(config, current_model=""):
     """Nous Portal provider: ensure logged in, then pick model."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         get_provider_auth_state, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, resolve_nous_runtime_credentials,
         fetch_nous_models, AuthError, format_auth_error,
         _login_nous, PROVIDER_REGISTRY,
     )
-    from hermes_cli.config import get_env_value, save_env_value
+    from hermetica_cli.config import get_env_value, save_env_value
     import argparse
 
     state = get_provider_auth_state("nous")
@@ -1064,13 +1064,13 @@ def _model_flow_nous(config, current_model=""):
 
 def _model_flow_openai_codex(config, current_model=""):
     """OpenAI Codex provider: ensure logged in, then pick model."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         get_codex_auth_status, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, _login_openai_codex,
         PROVIDER_REGISTRY, DEFAULT_CODEX_BASE_URL,
     )
-    from hermes_cli.codex_models import get_codex_model_ids
-    from hermes_cli.config import get_env_value, save_env_value
+    from hermetica_cli.codex_models import get_codex_model_ids
+    from hermetica_cli.config import get_env_value, save_env_value
     import argparse
 
     status = get_codex_auth_status()
@@ -1089,7 +1089,7 @@ def _model_flow_openai_codex(config, current_model=""):
 
     _codex_token = None
     try:
-        from hermes_cli.auth import resolve_codex_runtime_credentials
+        from hermetica_cli.auth import resolve_codex_runtime_credentials
         _codex_creds = resolve_codex_runtime_credentials()
         _codex_token = _codex_creds.get("api_key")
     except Exception:
@@ -1117,8 +1117,8 @@ def _model_flow_custom(config):
     Automatically saves the endpoint to ``custom_providers`` in config.yaml
     so it appears in the provider menu on subsequent runs.
     """
-    from hermes_cli.auth import _save_model_choice, deactivate_provider
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
+    from hermetica_cli.auth import _save_model_choice, deactivate_provider
+    from hermetica_cli.config import get_env_value, save_env_value, load_config, save_config
 
     current_url = get_env_value("OPENAI_BASE_URL") or ""
     current_key = get_env_value("OPENAI_API_KEY") or ""
@@ -1161,7 +1161,7 @@ def _model_flow_custom(config):
 
     effective_key = api_key or current_key
 
-    from hermes_cli.models import probe_api_models
+    from hermetica_cli.models import probe_api_models
 
     probe = probe_api_models(effective_key, effective_url)
     if probe.get("used_fallback") and probe.get("resolved_base_url"):
@@ -1221,7 +1221,7 @@ def _save_custom_provider(base_url, api_key="", model="", context_length=None):
     model name and context_length but doesn't add a duplicate entry.
     Auto-generates a display name from the URL hostname.
     """
-    from hermes_cli.config import load_config, save_config
+    from hermetica_cli.config import load_config, save_config
 
     cfg = load_config()
     providers = cfg.get("custom_providers") or []
@@ -1278,7 +1278,7 @@ def _save_custom_provider(base_url, api_key="", model="", context_length=None):
 
 def _remove_custom_provider(config):
     """Let the user remove a saved custom provider from config.yaml."""
-    from hermes_cli.config import load_config, save_config
+    from hermetica_cli.config import load_config, save_config
 
     cfg = load_config()
     providers = cfg.get("custom_providers") or []
@@ -1337,9 +1337,9 @@ def _model_flow_named_custom(config, provider_info):
     If the entry has a saved model name, activates it immediately.
     Otherwise probes the endpoint's /models API to let the user pick one.
     """
-    from hermes_cli.auth import _save_model_choice, deactivate_provider
-    from hermes_cli.config import save_env_value, load_config, save_config
-    from hermes_cli.models import fetch_api_models
+    from hermetica_cli.auth import _save_model_choice, deactivate_provider
+    from hermetica_cli.config import save_env_value, load_config, save_config
+    from hermetica_cli.models import fetch_api_models
 
     name = provider_info["name"]
     base_url = provider_info["base_url"]
@@ -1600,15 +1600,15 @@ def _prompt_reasoning_effort_selection(efforts, current_effort=""):
 
 def _model_flow_copilot(config, current_model=""):
     """GitHub Copilot flow using env vars, gh CLI, or OAuth device code."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         PROVIDER_REGISTRY,
         _prompt_model_selection,
         _save_model_choice,
         deactivate_provider,
         resolve_api_key_provider_credentials,
     )
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
-    from hermes_cli.models import (
+    from hermetica_cli.config import get_env_value, save_env_value, load_config, save_config
+    from hermetica_cli.models import (
         fetch_api_models,
         fetch_github_model_catalog,
         github_model_reasoning_efforts,
@@ -1645,7 +1645,7 @@ def _model_flow_copilot(config, current_model=""):
 
         if choice == "1":
             try:
-                from hermes_cli.copilot_auth import copilot_device_code_login
+                from hermetica_cli.copilot_auth import copilot_device_code_login
                 token = copilot_device_code_login()
                 if token:
                     save_env_value("COPILOT_GITHUB_TOKEN", token)
@@ -1668,7 +1668,7 @@ def _model_flow_copilot(config, current_model=""):
                 return
             # Validate token type
             try:
-                from hermes_cli.copilot_auth import validate_copilot_token
+                from hermetica_cli.copilot_auth import validate_copilot_token
                 valid, msg = validate_copilot_token(new_key)
                 if not valid:
                     print(f"  ✗ {msg}")
@@ -1776,7 +1776,7 @@ def _model_flow_copilot(config, current_model=""):
 
 def _model_flow_copilot_acp(config, current_model=""):
     """GitHub Copilot ACP flow using the local Copilot CLI."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         PROVIDER_REGISTRY,
         _prompt_model_selection,
         _save_model_choice,
@@ -1785,11 +1785,11 @@ def _model_flow_copilot_acp(config, current_model=""):
         resolve_api_key_provider_credentials,
         resolve_external_process_provider_credentials,
     )
-    from hermes_cli.models import (
+    from hermetica_cli.models import (
         fetch_github_model_catalog,
         normalize_copilot_model_id,
     )
-    from hermes_cli.config import load_config, save_config
+    from hermetica_cli.config import load_config, save_config
 
     del config
 
@@ -1883,11 +1883,11 @@ def _model_flow_kimi(config, current_model=""):
 
     No manual base URL prompt — endpoint is determined by key prefix.
     """
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         PROVIDER_REGISTRY, KIMI_CODE_BASE_URL, _prompt_model_selection,
         _save_model_choice, deactivate_provider,
     )
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
+    from hermetica_cli.config import get_env_value, save_env_value, load_config, save_config
 
     provider_id = "kimi-coding"
     pconfig = PROVIDER_REGISTRY[provider_id]
@@ -1981,11 +1981,11 @@ def _model_flow_kimi(config, current_model=""):
 
 def _model_flow_api_key_provider(config, provider_id, current_model=""):
     """Generic flow for API-key providers (z.ai, MiniMax)."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         PROVIDER_REGISTRY, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, deactivate_provider,
     )
-    from hermes_cli.config import get_env_value, save_env_value, load_config, save_config
+    from hermetica_cli.config import get_env_value, save_env_value, load_config, save_config
 
     pconfig = PROVIDER_REGISTRY[provider_id]
     key_env = pconfig.api_key_env_vars[0] if pconfig.api_key_env_vars else ""
@@ -2032,7 +2032,7 @@ def _model_flow_api_key_provider(config, provider_id, current_model=""):
         effective_base = override
 
     # Model selection — try live /models endpoint first, fall back to defaults
-    from hermes_cli.models import fetch_api_models
+    from hermetica_cli.models import fetch_api_models
     api_key_for_probe = existing_key or (get_env_value(key_env) if key_env else "")
     live_models = fetch_api_models(api_key_for_probe, effective_base)
 
@@ -2085,7 +2085,7 @@ def _run_anthropic_oauth_flow(save_env_value):
         read_claude_code_credentials,
         is_claude_code_token_valid,
     )
-    from hermes_cli.config import (
+    from hermetica_cli.config import (
         save_anthropic_oauth_token,
         use_anthropic_claude_code_credentials,
     )
@@ -2165,15 +2165,15 @@ def _run_anthropic_oauth_flow(save_env_value):
 def _model_flow_anthropic(config, current_model=""):
     """Flow for Anthropic provider — OAuth subscription, API key, or Claude Code creds."""
     import os
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         PROVIDER_REGISTRY, _prompt_model_selection, _save_model_choice,
         _update_config_for_provider, deactivate_provider,
     )
-    from hermes_cli.config import (
+    from hermetica_cli.config import (
         get_env_value, save_env_value, load_config, save_config,
         save_anthropic_api_key,
     )
-    from hermes_cli.models import _PROVIDER_MODELS
+    from hermetica_cli.models import _PROVIDER_MODELS
 
     pconfig = PROVIDER_REGISTRY["anthropic"]
 
@@ -2297,43 +2297,43 @@ def _model_flow_anthropic(config, current_model=""):
 
 def cmd_login(args):
     """Authenticate Hermes CLI with a provider."""
-    from hermes_cli.auth import login_command
+    from hermetica_cli.auth import login_command
     login_command(args)
 
 
 def cmd_logout(args):
     """Clear provider authentication."""
-    from hermes_cli.auth import logout_command
+    from hermetica_cli.auth import logout_command
     logout_command(args)
 
 
 def cmd_status(args):
     """Show status of all components."""
-    from hermes_cli.status import show_status
+    from hermetica_cli.status import show_status
     show_status(args)
 
 
 def cmd_cron(args):
     """Cron job management."""
-    from hermes_cli.cron import cron_command
+    from hermetica_cli.cron import cron_command
     cron_command(args)
 
 
 def cmd_doctor(args):
     """Check configuration and dependencies."""
-    from hermes_cli.doctor import run_doctor
+    from hermetica_cli.doctor import run_doctor
     run_doctor(args)
 
 
 def cmd_config(args):
     """Configuration management."""
-    from hermes_cli.config import config_command
+    from hermetica_cli.config import config_command
     config_command(args)
 
 
 def cmd_version(args):
     """Show version."""
-    print(f"Hermes Agent v{__version__} ({__release_date__})")
+    print(f"Hermetica v{__version__} ({__release_date__})")
     print(f"Project: {PROJECT_ROOT}")
     
     # Show Python version
@@ -2348,7 +2348,7 @@ def cmd_version(args):
 
     # Show update status (synchronous — acceptable since user asked for version info)
     try:
-        from hermes_cli.banner import check_for_updates
+        from hermetica_cli.banner import check_for_updates
         behind = check_for_updates()
         if behind and behind > 0:
             commits_word = "commit" if behind == 1 else "commits"
@@ -2360,13 +2360,13 @@ def cmd_version(args):
 
 
 def cmd_uninstall(args):
-    """Uninstall Hermes Agent."""
-    from hermes_cli.uninstall import run_uninstall
+    """Uninstall Hermetica."""
+    from hermetica_cli.uninstall import run_uninstall
     run_uninstall(args)
 
 
 def _update_via_zip(args):
-    """Update Hermes Agent by downloading a ZIP archive.
+    """Update Hermetica by downloading a ZIP archive.
     
     Used on Windows when git file I/O is broken (antivirus, NTFS filter 
     drivers causing 'Invalid argument' errors on file creation).
@@ -2377,20 +2377,20 @@ def _update_via_zip(args):
     from urllib.request import urlretrieve
     
     branch = "main"
-    zip_url = f"https://github.com/NousResearch/hermes-agent/archive/refs/heads/{branch}.zip"
+    zip_url = f"https://github.com/NousResearch/hermetica/archive/refs/heads/{branch}.zip"
     
     print("→ Downloading latest version...")
     try:
         tmp_dir = tempfile.mkdtemp(prefix="hermes-update-")
-        zip_path = os.path.join(tmp_dir, f"hermes-agent-{branch}.zip")
+        zip_path = os.path.join(tmp_dir, f"hermetica-{branch}.zip")
         urlretrieve(zip_url, zip_path)
         
         print("→ Extracting...")
         with zipfile.ZipFile(zip_path, 'r') as zf:
             zf.extractall(tmp_dir)
         
-        # GitHub ZIPs extract to hermes-agent-<branch>/
-        extracted = os.path.join(tmp_dir, f"hermes-agent-{branch}")
+        # GitHub ZIPs extract to hermetica-<branch>/
+        extracted = os.path.join(tmp_dir, f"hermetica-{branch}")
         if not os.path.isdir(extracted):
             # Try to find it
             for d in os.listdir(tmp_dir):
@@ -2645,10 +2645,10 @@ def _invalidate_update_cache():
         pass
 
 def cmd_update(args):
-    """Update Hermes Agent to the latest version."""
+    """Update Hermetica to the latest version."""
     import shutil
     
-    print("⚕ Updating Hermes Agent...")
+    print("⚕ Updating Hermetica...")
     print()
     
     # Try git-based update first, fall back to ZIP download on Windows
@@ -2661,7 +2661,7 @@ def cmd_update(args):
             use_zip_update = True
         else:
             print("✗ Not a git repository. Please reinstall:")
-            print("  curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash")
+            print("  curl -fsSL https://raw.githubusercontent.com/NousResearch/hermetica/main/scripts/install.sh | bash")
             sys.exit(1)
     
     # On Windows, git can fail with "unable to write loose object file: Invalid argument"
@@ -2797,7 +2797,7 @@ def cmd_update(args):
         print()
         print("→ Checking configuration for new options...")
         
-        from hermes_cli.config import (
+        from hermetica_cli.config import (
             get_missing_env_vars, get_missing_config_fields, 
             check_config_version, migrate_config
         )
@@ -2839,7 +2839,7 @@ def cmd_update(args):
         # installation's gateway — safe with multiple installations.
         try:
             from gateway.status import get_running_pid, remove_pid_file
-            from hermes_cli.gateway import (
+            from hermetica_cli.gateway import (
                 get_service_name, get_launchd_plist_path, is_macos, is_linux,
                 refresh_launchd_plist_if_needed,
                 _ensure_user_systemd_env, get_systemd_linger_status,
@@ -3007,7 +3007,7 @@ def main():
     """Main entry point for hermes CLI."""
     parser = argparse.ArgumentParser(
         prog="hermes",
-        description="Hermes Agent - AI assistant with tool-calling capabilities",
+        description="Hermetica - AI assistant with tool-calling capabilities",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -3023,7 +3023,7 @@ Examples:
     hermes config edit            Edit config in $EDITOR
     hermes config set model gpt-4 Set a config value
     hermes gateway                Run messaging gateway
-    hermes -s hermes-agent-dev,github-auth
+    hermes -s hermetica-dev,github-auth
     hermes -w                     Start in isolated git worktree
     hermes gateway install        Install gateway background service
     hermes sessions list          List past sessions
@@ -3089,7 +3089,7 @@ For more help on a command:
     chat_parser = subparsers.add_parser(
         "chat",
         help="Interactive chat with the agent",
-        description="Start an interactive chat session with Hermes Agent"
+        description="Start an interactive chat session with Hermetica"
     )
     chat_parser.add_argument(
         "-q", "--query",
@@ -3229,7 +3229,7 @@ For more help on a command:
     setup_parser = subparsers.add_parser(
         "setup",
         help="Interactive setup wizard",
-        description="Configure Hermes Agent with an interactive wizard. "
+        description="Configure Hermetica with an interactive wizard. "
                     "Run a specific section: hermes setup model|terminal|gateway|tools|agent"
     )
     setup_parser.add_argument(
@@ -3337,7 +3337,7 @@ For more help on a command:
     status_parser = subparsers.add_parser(
         "status",
         help="Show status of all components",
-        description="Display status of Hermes Agent components"
+        description="Display status of Hermetica components"
     )
     status_parser.add_argument(
         "--all",
@@ -3414,7 +3414,7 @@ For more help on a command:
     doctor_parser = subparsers.add_parser(
         "doctor",
         help="Check configuration and dependencies",
-        description="Diagnose issues with Hermes Agent setup"
+        description="Diagnose issues with Hermetica setup"
     )
     doctor_parser.add_argument(
         "--fix",
@@ -3429,7 +3429,7 @@ For more help on a command:
     config_parser = subparsers.add_parser(
         "config",
         help="View and edit configuration",
-        description="Manage Hermes Agent configuration"
+        description="Manage Hermetica configuration"
     )
     config_subparsers = config_parser.add_subparsers(dest="config_command")
     
@@ -3481,7 +3481,7 @@ For more help on a command:
     pairing_clear_parser = pairing_sub.add_parser("clear-pending", help="Clear all pending codes")
 
     def cmd_pairing(args):
-        from hermes_cli.pairing import pairing_command
+        from hermetica_cli.pairing import pairing_command
         pairing_command(args)
 
     pairing_parser.set_defaults(func=cmd_pairing)
@@ -3559,10 +3559,10 @@ For more help on a command:
     def cmd_skills(args):
         # Route 'config' action to skills_config module
         if getattr(args, 'skills_action', None) == 'config':
-            from hermes_cli.skills_config import skills_command as skills_config_command
+            from hermetica_cli.skills_config import skills_command as skills_config_command
             skills_config_command(args)
         else:
-            from hermes_cli.skills_hub import skills_command
+            from hermetica_cli.skills_hub import skills_command
             skills_command(args)
 
     skills_parser.set_defaults(func=cmd_skills)
@@ -3602,7 +3602,7 @@ For more help on a command:
     plugins_subparsers.add_parser("list", aliases=["ls"], help="List installed plugins")
 
     def cmd_plugins(args):
-        from hermes_cli.plugins_cmd import plugins_command
+        from hermetica_cli.plugins_cmd import plugins_command
         plugins_command(args)
 
     plugins_parser.set_defaults(func=cmd_plugins)
@@ -3756,10 +3756,10 @@ For more help on a command:
     def cmd_tools(args):
         action = getattr(args, "tools_action", None)
         if action in ("list", "disable", "enable"):
-            from hermes_cli.tools_config import tools_disable_enable_command
+            from hermetica_cli.tools_config import tools_disable_enable_command
             tools_disable_enable_command(args)
         else:
-            from hermes_cli.tools_config import tools_command
+            from hermetica_cli.tools_config import tools_command
             tools_command(args)
 
     tools_parser.set_defaults(func=cmd_tools)
@@ -3797,7 +3797,7 @@ For more help on a command:
     mcp_cfg_p.add_argument("name", help="Server name to configure")
 
     def cmd_mcp(args):
-        from hermes_cli.mcp_config import mcp_command
+        from hermetica_cli.mcp_config import mcp_command
         mcp_command(args)
 
     mcp_parser.set_defaults(func=cmd_mcp)
@@ -3846,7 +3846,7 @@ For more help on a command:
     def cmd_sessions(args):
         import json as _json
         try:
-            from hermes_state import SessionDB
+            from hermetica_state import SessionDB
             db = SessionDB()
         except Exception as e:
             print(f"Error: Could not open session database: {e}")
@@ -3999,7 +3999,7 @@ For more help on a command:
 
     def cmd_insights(args):
         try:
-            from hermes_state import SessionDB
+            from hermetica_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()
@@ -4070,7 +4070,7 @@ For more help on a command:
     )
 
     def cmd_claw(args):
-        from hermes_cli.claw import claw_command
+        from hermetica_cli.claw import claw_command
         claw_command(args)
 
     claw_parser.set_defaults(func=cmd_claw)
@@ -4089,7 +4089,7 @@ For more help on a command:
     # =========================================================================
     update_parser = subparsers.add_parser(
         "update",
-        help="Update Hermes Agent to the latest version",
+        help="Update Hermetica to the latest version",
         description="Pull the latest changes from git and reinstall dependencies"
     )
     update_parser.set_defaults(func=cmd_update)
@@ -4099,8 +4099,8 @@ For more help on a command:
     # =========================================================================
     uninstall_parser = subparsers.add_parser(
         "uninstall",
-        help="Uninstall Hermes Agent",
-        description="Remove Hermes Agent from your system. Can keep configs/data for reinstall."
+        help="Uninstall Hermetica",
+        description="Remove Hermetica from your system. Can keep configs/data for reinstall."
     )
     uninstall_parser.add_argument(
         "--full",
@@ -4119,12 +4119,12 @@ For more help on a command:
     # =========================================================================
     acp_parser = subparsers.add_parser(
         "acp",
-        help="Run Hermes Agent as an ACP (Agent Client Protocol) server",
-        description="Start Hermes Agent in ACP mode for editor integration (VS Code, Zed, JetBrains)",
+        help="Run Hermetica as an ACP (Agent Client Protocol) server",
+        description="Start Hermetica in ACP mode for editor integration (VS Code, Zed, JetBrains)",
     )
 
     def cmd_acp(args):
-        """Launch Hermes Agent as an ACP server."""
+        """Launch Hermetica as an ACP server."""
         try:
             from acp_adapter.entry import main as acp_main
             acp_main()

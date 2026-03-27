@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hermes Agent Release Script
+"""Hermetica Release Script
 
 Generates changelogs and creates GitHub releases with CalVer tags.
 
@@ -313,14 +313,14 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/N
     # Header
     now = datetime.now()
     date_str = now.strftime("%B %d, %Y")
-    lines.append(f"# Hermes Agent v{semver} ({tag_name})")
+    lines.append(f"# Hermetica v{semver} ({tag_name})")
     lines.append("")
     lines.append(f"**Release Date:** {date_str}")
     lines.append("")
 
     if first_release:
         lines.append("> 🎉 **First official release!** This marks the beginning of regular weekly releases")
-        lines.append("> for Hermes Agent. See below for everything included in this initial release.")
+        lines.append("> for Hermetica. See below for everything included in this initial release.")
         lines.append("")
 
     # Group commits by category
@@ -404,7 +404,7 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/N
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Hermes Agent Release Tool")
+    parser = argparse.ArgumentParser(description="Hermetica Release Tool")
     parser.add_argument("--bump", choices=["major", "minor", "patch"],
                         help="Which semver component to bump")
     parser.add_argument("--publish", action="store_true",
@@ -459,7 +459,7 @@ def main():
             return
 
     print(f"{'='*60}")
-    print(f"  Hermes Agent Release Preview")
+    print(f"  Hermetica Release Preview")
     print(f"{'='*60}")
     print(f"  CalVer tag:      {tag_name}")
     print(f"  SemVer:          v{current_version} → v{new_version}")
@@ -500,7 +500,7 @@ def main():
 
         # Create annotated tag
         git("tag", "-a", tag_name, "-m",
-            f"Hermes Agent v{new_version} ({calver_date})\n\nWeekly release")
+            f"Hermetica v{new_version} ({calver_date})\n\nWeekly release")
         print(f"  ✓ Created tag {tag_name}")
 
         # Push
@@ -513,7 +513,7 @@ def main():
 
         result = subprocess.run(
             ["gh", "release", "create", tag_name,
-             "--title", f"Hermes Agent v{new_version} ({calver_date})",
+             "--title", f"Hermetica v{new_version} ({calver_date})",
              "--notes-file", str(changelog_file)],
             capture_output=True, text=True,
             cwd=str(REPO_ROOT),
@@ -526,7 +526,7 @@ def main():
         else:
             print(f"  ✗ GitHub release failed: {result.stderr}")
             print(f"    Tag was created. Create the release manually:")
-            print(f"    gh release create {tag_name} --title 'Hermes Agent v{new_version} ({calver_date})'")
+            print(f"    gh release create {tag_name} --title 'Hermetica v{new_version} ({calver_date})'")
 
         print(f"\n  🎉 Release v{new_version} ({tag_name}) published!")
     else:

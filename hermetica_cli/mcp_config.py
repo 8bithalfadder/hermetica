@@ -17,14 +17,14 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from hermes_cli.config import (
+from hermetica_cli.config import (
     load_config,
     save_config,
     get_env_value,
     save_env_value,
     get_hermes_home,
 )
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 logger = logging.getLogger(__name__)
 
@@ -302,7 +302,7 @@ def cmd_mcp_add(args):
 
     if choice in ("s", "select"):
         # Interactive tool selection
-        from hermes_cli.curses_ui import curses_checklist
+        from hermetica_cli.curses_ui import curses_checklist
 
         labels = [f"{t[0]}  —  {t[1]}" for t in tools]
         pre_selected = set(range(len(tools)))
@@ -567,7 +567,7 @@ def cmd_mcp_configure(args):
     print()
 
     # Interactive checklist
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     labels = [f"{t[0]}  —  {t[1]}" for t in all_tools]
 

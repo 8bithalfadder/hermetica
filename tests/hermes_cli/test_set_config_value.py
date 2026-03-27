@@ -6,7 +6,7 @@ from unittest.mock import patch, call
 
 import pytest
 
-from hermes_cli.config import set_config_value
+from hermetica_cli.config import set_config_value
 
 
 @pytest.fixture(autouse=True)

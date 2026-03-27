@@ -1,7 +1,7 @@
 """
 Status command for hermes CLI.
 
-Shows the status of all Hermes Agent components.
+Shows the status of all Hermetica components.
 """
 
 import os
@@ -11,12 +11,12 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-from hermes_cli.auth import AuthError, resolve_provider
-from hermes_cli.colors import Colors, color
-from hermes_cli.config import get_env_path, get_env_value, get_hermes_home, load_config
-from hermes_cli.models import provider_label
-from hermes_cli.runtime_provider import resolve_requested_provider
-from hermes_constants import OPENROUTER_MODELS_URL
+from hermetica_cli.auth import AuthError, resolve_provider
+from hermetica_cli.colors import Colors, color
+from hermetica_cli.config import get_env_path, get_env_value, get_hermes_home, load_config
+from hermetica_cli.models import provider_label
+from hermetica_cli.runtime_provider import resolve_requested_provider
+from hermetica_constants import OPENROUTER_MODELS_URL
 
 def check_mark(ok: bool) -> str:
     if ok:
@@ -78,13 +78,13 @@ def _effective_provider_label() -> str:
 
 
 def show_status(args):
-    """Show status of all Hermes Agent components."""
+    """Show status of all Hermetica components."""
     show_all = getattr(args, 'all', False)
     deep = getattr(args, 'deep', False)
     
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.CYAN))
-    print(color("│                 ⚕ Hermes Agent Status                  │", Colors.CYAN))
+    print(color("│                 ⚕ Hermetica Status                  │", Colors.CYAN))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.CYAN))
     
     # =========================================================================
@@ -150,7 +150,7 @@ def show_status(args):
     print(color("◆ Auth Providers", Colors.CYAN, Colors.BOLD))
 
     try:
-        from hermes_cli.auth import get_nous_auth_status, get_codex_auth_status
+        from hermetica_cli.auth import get_nous_auth_status, get_codex_auth_status
         nous_status = get_nous_auth_status()
         codex_status = get_codex_auth_status()
     except Exception:
@@ -278,7 +278,7 @@ def show_status(args):
     
     if sys.platform.startswith('linux'):
         try:
-            from hermes_cli.gateway import get_service_name
+            from hermetica_cli.gateway import get_service_name
             _gw_svc = get_service_name()
         except Exception:
             _gw_svc = "hermes-gateway"

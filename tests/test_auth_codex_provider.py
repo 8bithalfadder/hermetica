@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from hermes_cli.auth import (
+from hermetica_cli.auth import (
     AuthError,
     DEFAULT_CODEX_BASE_URL,
     PROVIDER_REGISTRY,

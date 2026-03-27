@@ -174,7 +174,7 @@ def load_permanent_allowlist() -> set:
     patterns added via 'always' in a previous session.
     """
     try:
-        from hermes_cli.config import load_config
+        from hermetica_cli.config import load_config
         config = load_config()
         patterns = set(config.get("command_allowlist", []) or [])
         if patterns:
@@ -187,7 +187,7 @@ def load_permanent_allowlist() -> set:
 def save_permanent_allowlist(patterns: set):
     """Save permanently allowed command patterns to config."""
     try:
-        from hermes_cli.config import load_config, save_config
+        from hermetica_cli.config import load_config, save_config
         config = load_config()
         config["command_allowlist"] = list(patterns)
         save_config(config)
@@ -298,7 +298,7 @@ def _normalize_approval_mode(mode) -> str:
 def _get_approval_mode() -> str:
     """Read the approval mode from config. Returns 'manual', 'smart', or 'off'."""
     try:
-        from hermes_cli.config import load_config
+        from hermetica_cli.config import load_config
         config = load_config()
         mode = config.get("approvals", {}).get("mode", "manual")
         return _normalize_approval_mode(mode)

@@ -224,7 +224,7 @@ def build_oauth_auth(server_name: str, server_url: str):
     redirect_uri = f"http://127.0.0.1:{_oauth_port}/callback"
 
     client_metadata = OAuthClientMetadata(
-        client_name="Hermes Agent",
+        client_name="Hermetica",
         redirect_uris=[redirect_uri],
         grant_types=["authorization_code", "refresh_token"],
         response_types=["code"],

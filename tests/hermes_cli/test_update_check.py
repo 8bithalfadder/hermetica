@@ -11,13 +11,13 @@ import pytest
 
 def test_version_string_no_v_prefix():
     """__version__ should be bare semver without a 'v' prefix."""
-    from hermes_cli import __version__
+    from hermetica_cli import __version__
     assert not __version__.startswith("v"), f"__version__ should not start with 'v', got {__version__!r}"
 
 
 def test_check_for_updates_uses_cache(tmp_path):
     """When cache is fresh, check_for_updates should return cached value without calling git."""
-    from hermes_cli.banner import check_for_updates
+    from hermetica_cli.banner import check_for_updates
 
     # Create a fake git repo and fresh cache
     repo_dir = tmp_path / "hermes-agent"
@@ -37,7 +37,7 @@ def test_check_for_updates_uses_cache(tmp_path):
 
 def test_check_for_updates_expired_cache(tmp_path):
     """When cache is expired, check_for_updates should call git fetch."""
-    from hermes_cli.banner import check_for_updates
+    from hermetica_cli.banner import check_for_updates
 
     repo_dir = tmp_path / "hermes-agent"
     repo_dir.mkdir()
@@ -59,7 +59,7 @@ def test_check_for_updates_expired_cache(tmp_path):
 
 def test_check_for_updates_no_git_dir(tmp_path):
     """Returns None when .git directory doesn't exist anywhere."""
-    import hermes_cli.banner as banner
+    import hermetica_cli.banner as banner
 
     # Create a fake banner.py so the fallback path also has no .git
     fake_banner = tmp_path / "hermes_cli" / "banner.py"
@@ -80,7 +80,7 @@ def test_check_for_updates_no_git_dir(tmp_path):
 
 def test_check_for_updates_fallback_to_project_root():
     """Dev install: falls back to Path(__file__).parent.parent when HERMES_HOME has no git repo."""
-    import hermes_cli.banner as banner
+    import hermetica_cli.banner as banner
 
     project_root = Path(banner.__file__).parent.parent.resolve()
     if not (project_root / ".git").exists():
@@ -99,7 +99,7 @@ def test_check_for_updates_fallback_to_project_root():
 
 def test_prefetch_non_blocking():
     """prefetch_update_check() should return immediately without blocking."""
-    import hermes_cli.banner as banner
+    import hermetica_cli.banner as banner
 
     # Reset module state
     banner._update_result = None
@@ -120,7 +120,7 @@ def test_prefetch_non_blocking():
 
 def test_get_update_result_timeout():
     """get_update_result() returns None when check hasn't completed within timeout."""
-    import hermes_cli.banner as banner
+    import hermetica_cli.banner as banner
 
     # Reset module state — don't set the event
     banner._update_result = None

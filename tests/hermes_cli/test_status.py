@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from hermes_cli.status import show_status
+from hermetica_cli.status import show_status
 
 
 def test_show_status_includes_tavily_key(monkeypatch, capsys, tmp_path):

@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from hermes_cli.models import (
+from hermetica_cli.models import (
     copilot_model_api_mode,
     fetch_github_model_catalog,
     curated_models_for_provider,

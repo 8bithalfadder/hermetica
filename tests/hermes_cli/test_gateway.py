@@ -4,7 +4,7 @@ import signal
 from types import SimpleNamespace
 from unittest.mock import patch, call
 
-import hermes_cli.gateway as gateway
+import hermetica_cli.gateway as gateway
 
 
 class TestSystemdLingerStatus:

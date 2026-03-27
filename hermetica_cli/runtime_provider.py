@@ -5,8 +5,8 @@ from __future__ import annotations
 import os
 from typing import Any, Dict, Optional
 
-from hermes_cli import auth as auth_mod
-from hermes_cli.auth import (
+from hermetica_cli import auth as auth_mod
+from hermetica_cli.auth import (
     AuthError,
     PROVIDER_REGISTRY,
     format_auth_error,
@@ -17,8 +17,8 @@ from hermes_cli.auth import (
     resolve_external_process_provider_credentials,
     has_usable_secret,
 )
-from hermes_cli.config import load_config
-from hermes_constants import OPENROUTER_BASE_URL
+from hermetica_cli.config import load_config
+from hermetica_constants import OPENROUTER_BASE_URL
 
 
 def _normalize_custom_provider_name(value: str) -> str:
@@ -87,7 +87,7 @@ def _copilot_runtime_api_mode(model_cfg: Dict[str, Any], api_key: str) -> str:
         return "chat_completions"
 
     try:
-        from hermes_cli.models import copilot_model_api_mode
+        from hermetica_cli.models import copilot_model_api_mode
 
         return copilot_model_api_mode(model_name, api_key=api_key)
     except Exception:

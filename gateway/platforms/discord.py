@@ -1524,7 +1524,7 @@ class DiscordAdapter(BasePlatformAdapter):
             event = self._build_slash_event(interaction, f"/voice {mode}".strip())
             await self.handle_message(event)
 
-        @tree.command(name="update", description="Update Hermes Agent to the latest version")
+        @tree.command(name="update", description="Update Hermetica to the latest version")
         async def slash_update(interaction: discord.Interaction):
             await self._run_simple_slash(interaction, "/update", "Update initiated~")
 
@@ -1854,7 +1854,7 @@ class DiscordAdapter(BasePlatformAdapter):
     @staticmethod
     def _thread_state_path() -> Path:
         """Path to the persisted thread participation set."""
-        from hermes_cli.config import get_hermes_home
+        from hermetica_cli.config import get_hermes_home
         return get_hermes_home() / "discord_threads.json"
 
     @classmethod

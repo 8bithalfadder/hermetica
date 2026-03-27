@@ -36,7 +36,7 @@ class TestNonInteractiveSetup:
 
     def test_non_interactive_flag_skips_wizard(self, capsys):
         """--non-interactive should print guidance and not enter the wizard."""
-        from hermes_cli.setup import run_setup_wizard
+        from hermetica_cli.setup import run_setup_wizard
 
         args = _make_setup_args(non_interactive=True)
 
@@ -54,7 +54,7 @@ class TestNonInteractiveSetup:
 
     def test_no_tty_skips_wizard(self, capsys):
         """When stdin has no TTY, the setup wizard should print guidance and return."""
-        from hermes_cli.setup import run_setup_wizard
+        from hermetica_cli.setup import run_setup_wizard
 
         args = _make_setup_args(non_interactive=False)
 
@@ -74,7 +74,7 @@ class TestNonInteractiveSetup:
 
     def test_chat_first_run_headless_skips_setup_prompt(self, capsys):
         """Bare `hermes` should not prompt for input when no provider exists and stdin is headless."""
-        from hermes_cli.main import cmd_chat
+        from hermetica_cli.main import cmd_chat
 
         args = _make_chat_args()
 

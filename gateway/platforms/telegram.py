@@ -375,7 +375,7 @@ class TelegramAdapter(BasePlatformAdapter):
             # gateway command there automatically adds it to the Telegram menu.
             try:
                 from telegram import BotCommand
-                from hermes_cli.commands import telegram_bot_commands
+                from hermetica_cli.commands import telegram_bot_commands
                 await self._bot.set_my_commands([
                     BotCommand(name, desc) for name, desc in telegram_bot_commands()
                 ])

@@ -131,7 +131,7 @@ class TestExecuteCode(unittest.TestCase):
 
     def test_repo_root_modules_are_importable(self):
         """Sandboxed scripts can import modules that live at the repo root."""
-        result = self._run('import hermes_constants; print(hermes_constants.__file__)')
+        result = self._run('import hermetica_constants; print(hermes_constants.__file__)')
         self.assertEqual(result["status"], "success")
         self.assertIn("hermes_constants.py", result["output"])
 

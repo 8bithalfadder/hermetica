@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from hermes_cli.auth import AuthError, get_provider_auth_state, resolve_nous_runtime_credentials
+from hermetica_cli.auth import AuthError, get_provider_auth_state, resolve_nous_runtime_credentials
 
 
 def _setup_nous_auth(

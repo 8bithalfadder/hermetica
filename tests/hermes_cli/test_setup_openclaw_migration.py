@@ -4,7 +4,7 @@ from argparse import Namespace
 from types import ModuleType
 from unittest.mock import MagicMock, patch
 
-from hermes_cli import setup as setup_mod
+from hermetica_cli import setup as setup_mod
 
 
 # ---------------------------------------------------------------------------

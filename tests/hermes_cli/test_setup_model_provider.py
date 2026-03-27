@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from hermes_cli.config import load_config, save_config, save_env_value
-from hermes_cli.setup import _print_setup_summary, setup_model_provider
+from hermetica_cli.config import load_config, save_config, save_env_value
+from hermetica_cli.setup import _print_setup_summary, setup_model_provider
 
 
 def _maybe_keep_current_tts(question, choices):

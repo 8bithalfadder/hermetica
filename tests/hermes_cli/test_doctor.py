@@ -8,10 +8,10 @@ from types import SimpleNamespace
 
 import pytest
 
-import hermes_cli.doctor as doctor
-import hermes_cli.gateway as gateway_cli
-from hermes_cli import doctor as doctor_mod
-from hermes_cli.doctor import _has_provider_env_config
+import hermetica_cli.doctor as doctor
+import hermetica_cli.gateway as gateway_cli
+from hermetica_cli import doctor as doctor_mod
+from hermetica_cli.doctor import _has_provider_env_config
 
 
 class TestProviderEnvDetection:

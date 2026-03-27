@@ -1,5 +1,5 @@
 """
-Configuration management for Hermes Agent.
+Configuration management for Hermetica.
 
 Config files are stored in ~/.hermes/ for easy access:
 - ~/.hermes/config.yaml  - All settings (model, toolsets, terminal, etc.)
@@ -42,8 +42,8 @@ _EXTRA_ENV_KEYS = frozenset({
 
 import yaml
 
-from hermes_cli.colors import Colors, color
-from hermes_cli.default_soul import DEFAULT_SOUL_MD
+from hermetica_cli.colors import Colors, color
+from hermetica_cli.default_soul import DEFAULT_SOUL_MD
 
 
 # =============================================================================
@@ -338,7 +338,7 @@ DEFAULT_CONFIG = {
     # WhatsApp platform settings (gateway mode)
     "whatsapp": {
         # Reply prefix prepended to every outgoing WhatsApp message.
-        # Default (None) uses the built-in "⚕ *Hermes Agent*" header.
+        # Default (None) uses the built-in "⚕ *Hermetica*" header.
         # Set to "" (empty string) to disable the header entirely.
         # Supports \n for newlines, e.g. "🤖 *My Bot*\n──────\n"
     },

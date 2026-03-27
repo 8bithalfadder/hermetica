@@ -81,7 +81,7 @@ _hermes_home = Path(os.getenv("HERMES_HOME", Path.home() / ".hermes"))
 # Load environment variables from ~/.hermes/.env first.
 # User-managed env files should override stale shell exports on restart.
 from dotenv import load_dotenv  # backward-compat for tests that monkeypatch this symbol
-from hermes_cli.env_loader import load_hermes_dotenv
+from hermetica_cli.env_loader import load_hermes_dotenv
 _env_path = _hermes_home / '.env'
 load_hermes_dotenv(hermes_home=_hermes_home, project_env=Path(__file__).resolve().parents[1] / '.env')
 
@@ -94,7 +94,7 @@ if _config_path.exists():
         with open(_config_path, encoding="utf-8") as _f:
             _cfg = _yaml.safe_load(_f) or {}
         # Expand ${ENV_VAR} references before bridging to env vars.
-        from hermes_cli.config import _expand_env_vars
+        from hermetica_cli.config import _expand_env_vars
         _cfg = _expand_env_vars(_cfg)
         # Top-level simple values (fallback only — don't override .env)
         for _key, _val in _cfg.items():
@@ -234,7 +234,7 @@ _AGENT_PENDING_SENTINEL = object()
 
 def _resolve_runtime_agent_kwargs() -> dict:
     """Resolve provider credentials for gateway-created AIAgent instances."""
-    from hermes_cli.runtime_provider import (
+    from hermetica_cli.runtime_provider import (
         resolve_runtime_provider,
         format_runtime_provider_error,
     )
@@ -386,7 +386,7 @@ class GatewayRunner:
         # Initialize session database for session_search tool support
         self._session_db = None
         try:
-            from hermes_state import SessionDB
+            from hermetica_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             logger.debug("SQLite session store not available: %s", e)
@@ -1567,7 +1567,7 @@ class GatewayRunner:
             # clear the adapter's pending queue so the stale "/reset" text
             # doesn't get re-processed as a user message after the
             # interrupt completes.
-            from hermes_cli.commands import resolve_command as _resolve_cmd_inner
+            from hermetica_cli.commands import resolve_command as _resolve_cmd_inner
             _evt_cmd = event.get_command()
             _cmd_def_inner = _resolve_cmd_inner(_evt_cmd) if _evt_cmd else None
             if _cmd_def_inner and _cmd_def_inner.name == "new":
@@ -1649,7 +1649,7 @@ class GatewayRunner:
         # Emit command:* hook for any recognized slash command.
         # GATEWAY_KNOWN_COMMANDS is derived from the central COMMAND_REGISTRY
         # in hermes_cli/commands.py — no hardcoded set to maintain here.
-        from hermes_cli.commands import GATEWAY_KNOWN_COMMANDS, resolve_command as _resolve_cmd
+        from hermetica_cli.commands import GATEWAY_KNOWN_COMMANDS, resolve_command as _resolve_cmd
         if command and command in GATEWAY_KNOWN_COMMANDS:
             await self.hooks.emit(f"command:{command}", {
                 "platform": source.platform.value if source.platform else "",
@@ -1798,7 +1798,7 @@ class GatewayRunner:
         # Plugin-registered slash commands
         if command:
             try:
-                from hermes_cli.plugins import get_plugin_command_handler
+                from hermetica_cli.plugins import get_plugin_command_handler
                 plugin_handler = get_plugin_command_handler(command)
                 if plugin_handler:
                     user_args = event.get_command_args().strip()
@@ -2736,7 +2736,7 @@ class GatewayRunner:
     
     async def _handle_help_command(self, event: MessageEvent) -> str:
         """Handle /help command - list available commands."""
-        from hermes_cli.commands import gateway_help_lines
+        from hermetica_cli.commands import gateway_help_lines
         lines = [
             "📖 **Hermes Commands**\n",
             *gateway_help_lines(),
@@ -2755,7 +2755,7 @@ class GatewayRunner:
     async def _handle_model_command(self, event: MessageEvent) -> str:
         """Handle /model command - show or change the current model."""
         import yaml
-        from hermes_cli.models import (
+        from hermetica_cli.models import (
             parse_model_input,
             validate_requested_model,
             curated_models_for_provider,
@@ -2786,7 +2786,7 @@ class GatewayRunner:
         current_provider = normalize_provider(current_provider)
         if current_provider == "auto":
             try:
-                from hermes_cli.auth import resolve_provider as _resolve_provider
+                from hermetica_cli.auth import resolve_provider as _resolve_provider
                 current_provider = _resolve_provider(current_provider)
             except Exception:
                 current_provider = "openrouter"
@@ -2819,7 +2819,7 @@ class GatewayRunner:
             ]
             # Show custom endpoint URL when using a custom provider
             if current_provider == "custom":
-                from hermes_cli.models import _get_custom_base_url
+                from hermetica_cli.models import _get_custom_base_url
                 custom_url = _get_custom_base_url() or os.getenv("OPENAI_BASE_URL", "")
                 if custom_url:
                     lines.append(f"**Endpoint:** `{custom_url}`")
@@ -2839,7 +2839,7 @@ class GatewayRunner:
         # Handle bare "/model custom" — switch to custom provider
         # and auto-detect the model from the endpoint.
         if args.strip().lower() == "custom":
-            from hermes_cli.model_switch import switch_to_custom_provider
+            from hermetica_cli.model_switch import switch_to_custom_provider
             cust_result = switch_to_custom_provider()
             if not cust_result.success:
                 return f"⚠️ {cust_result.error_message}"
@@ -2869,12 +2869,12 @@ class GatewayRunner:
             )
 
         # Core model-switching pipeline (shared with CLI)
-        from hermes_cli.model_switch import switch_model
+        from hermetica_cli.model_switch import switch_model
 
         # Resolve current base_url for is_custom detection
         _resolved_base = ""
         try:
-            from hermes_cli.runtime_provider import resolve_runtime_provider as _rtp
+            from hermetica_cli.runtime_provider import resolve_runtime_provider as _rtp
             _resolved_base = _rtp(requested=current_provider).get("base_url", "")
         except Exception:
             pass
@@ -2947,7 +2947,7 @@ class GatewayRunner:
     async def _handle_provider_command(self, event: MessageEvent) -> str:
         """Handle /provider command - show available providers."""
         import yaml
-        from hermes_cli.models import (
+        from hermetica_cli.models import (
             list_available_providers,
             normalize_provider,
             _PROVIDER_LABELS,
@@ -2969,7 +2969,7 @@ class GatewayRunner:
         current_provider = normalize_provider(current_provider)
         if current_provider == "auto":
             try:
-                from hermes_cli.auth import resolve_provider as _resolve_provider
+                from hermetica_cli.auth import resolve_provider as _resolve_provider
                 current_provider = _resolve_provider(current_provider)
             except Exception:
                 current_provider = "openrouter"
@@ -4163,7 +4163,7 @@ class GatewayRunner:
                     i += 1
 
         try:
-            from hermes_state import SessionDB
+            from hermetica_state import SessionDB
             from agent.insights import InsightsEngine
 
             loop = _asyncio.get_event_loop()
@@ -4324,7 +4324,7 @@ class GatewayRunner:
         return "❌ Command denied."
 
     async def _handle_update_command(self, event: MessageEvent) -> str:
-        """Handle /update command — update Hermes Agent to the latest version.
+        """Handle /update command — update Hermetica to the latest version.
 
         Spawns ``hermes update`` in a separate systemd scope so it survives the
         gateway restart that ``hermes update`` may trigger at the end. Marker

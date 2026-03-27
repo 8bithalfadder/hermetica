@@ -9,16 +9,16 @@ from unittest.mock import patch, MagicMock
 
 class TestGetDisabledSkills:
     def test_empty_config(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         assert get_disabled_skills({}) == set()
 
     def test_reads_global_disabled(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         config = {"skills": {"disabled": ["skill-a", "skill-b"]}}
         assert get_disabled_skills(config) == {"skill-a", "skill-b"}
 
     def test_reads_platform_disabled(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         config = {"skills": {
             "disabled": ["skill-a"],
             "platform_disabled": {"telegram": ["skill-b"]}
@@ -26,17 +26,17 @@ class TestGetDisabledSkills:
         assert get_disabled_skills(config, platform="telegram") == {"skill-b"}
 
     def test_platform_falls_back_to_global(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         config = {"skills": {"disabled": ["skill-a"]}}
         # no platform_disabled for cli -> falls back to global
         assert get_disabled_skills(config, platform="cli") == {"skill-a"}
 
     def test_missing_skills_key(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         assert get_disabled_skills({"other": "value"}) == set()
 
     def test_empty_disabled_list(self):
-        from hermes_cli.skills_config import get_disabled_skills
+        from hermetica_cli.skills_config import get_disabled_skills
         assert get_disabled_skills({"skills": {"disabled": []}}) == set()
 
 
@@ -47,7 +47,7 @@ class TestGetDisabledSkills:
 class TestSaveDisabledSkills:
     @patch("hermes_cli.skills_config.save_config")
     def test_saves_global_sorted(self, mock_save):
-        from hermes_cli.skills_config import save_disabled_skills
+        from hermetica_cli.skills_config import save_disabled_skills
         config = {}
         save_disabled_skills(config, {"skill-z", "skill-a"})
         assert config["skills"]["disabled"] == ["skill-a", "skill-z"]
@@ -55,21 +55,21 @@ class TestSaveDisabledSkills:
 
     @patch("hermes_cli.skills_config.save_config")
     def test_saves_platform_disabled(self, mock_save):
-        from hermes_cli.skills_config import save_disabled_skills
+        from hermetica_cli.skills_config import save_disabled_skills
         config = {}
         save_disabled_skills(config, {"skill-x"}, platform="telegram")
         assert config["skills"]["platform_disabled"]["telegram"] == ["skill-x"]
 
     @patch("hermes_cli.skills_config.save_config")
     def test_saves_empty(self, mock_save):
-        from hermes_cli.skills_config import save_disabled_skills
+        from hermetica_cli.skills_config import save_disabled_skills
         config = {"skills": {"disabled": ["skill-a"]}}
         save_disabled_skills(config, set())
         assert config["skills"]["disabled"] == []
 
     @patch("hermes_cli.skills_config.save_config")
     def test_creates_skills_key(self, mock_save):
-        from hermes_cli.skills_config import save_disabled_skills
+        from hermetica_cli.skills_config import save_disabled_skills
         config = {}
         save_disabled_skills(config, {"skill-x"})
         assert "skills" in config
@@ -196,7 +196,7 @@ class TestFindAllSkillsFiltering:
 
 class TestGetCategories:
     def test_extracts_unique_categories(self):
-        from hermes_cli.skills_config import _get_categories
+        from hermetica_cli.skills_config import _get_categories
         skills = [
             {"name": "a", "category": "mlops", "description": ""},
             {"name": "b", "category": "coding", "description": ""},
@@ -206,6 +206,6 @@ class TestGetCategories:
         assert cats == ["coding", "mlops"]
 
     def test_none_becomes_uncategorized(self):
-        from hermes_cli.skills_config import _get_categories
+        from hermetica_cli.skills_config import _get_categories
         skills = [{"name": "a", "category": None, "description": ""}]
         assert "uncategorized" in _get_categories(skills)

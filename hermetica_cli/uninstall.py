@@ -1,5 +1,5 @@
 """
-Hermes Agent Uninstaller.
+Hermetica Uninstaller.
 
 Provides options for:
 - Full uninstall: Remove everything including configs and data
@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 def log_info(msg: str):
     print(f"{color('→', Colors.CYAN)} {msg}")
@@ -73,8 +73,8 @@ def remove_path_from_shell_configs():
             skip_next = False
             
             for line in content.split('\n'):
-                # Skip the "# Hermes Agent" comment and following line
-                if '# Hermes Agent' in line or '# hermes-agent' in line:
+                # Skip the "# Hermetica" comment and following line
+                if '# Hermetica' in line or '# hermes-agent' in line:
                     skip_next = True
                     continue
                 if skip_next and ('hermes' in line.lower() and 'PATH' in line):
@@ -134,7 +134,7 @@ def uninstall_gateway_service():
         return False
     
     try:
-        from hermes_cli.gateway import get_service_name
+        from hermetica_cli.gateway import get_service_name
         svc_name = get_service_name()
     except Exception:
         svc_name = "hermes-gateway"
@@ -189,7 +189,7 @@ def run_uninstall(args):
     
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.MAGENTA, Colors.BOLD))
-    print(color("│            ⚕ Hermes Agent Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
+    print(color("│            ⚕ Hermetica Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.MAGENTA, Colors.BOLD))
     print()
     
@@ -327,5 +327,5 @@ def run_uninstall(args):
     print(color("Reload your shell to complete the process:", Colors.YELLOW))
     print("  source ~/.bashrc  # or ~/.zshrc")
     print()
-    print("Thank you for using Hermes Agent! ⚕")
+    print("Thank you for using Hermetica! ⚕")
     print()

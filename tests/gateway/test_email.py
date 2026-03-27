@@ -344,12 +344,12 @@ class TestGatewaySetup(unittest.TestCase):
     """Verify email in gateway setup wizard."""
 
     def test_email_in_platforms_list(self):
-        from hermes_cli.gateway import _PLATFORMS
+        from hermetica_cli.gateway import _PLATFORMS
         keys = [p["key"] for p in _PLATFORMS]
         self.assertIn("email", keys)
 
     def test_email_has_setup_vars(self):
-        from hermes_cli.gateway import _PLATFORMS
+        from hermetica_cli.gateway import _PLATFORMS
         email_platform = next(p for p in _PLATFORMS if p["key"] == "email")
         var_names = [v["name"] for v in email_platform["vars"]]
         self.assertIn("EMAIL_ADDRESS", var_names)
@@ -643,7 +643,7 @@ class TestThreadContext(unittest.TestCase):
             self.assertFalse(send_call["Subject"].startswith("Re: Re:"))
 
     def test_no_thread_context_uses_default_subject(self):
-        """Without thread context, subject should be 'Re: Hermes Agent'."""
+        """Without thread context, subject should be 'Re: Hermetica'."""
         adapter = self._make_adapter()
 
         with patch("smtplib.SMTP") as mock_smtp:
@@ -653,7 +653,7 @@ class TestThreadContext(unittest.TestCase):
             adapter._send_email("newuser@test.com", "Hello!", None)
 
             send_call = mock_server.send_message.call_args[0][0]
-            self.assertEqual(send_call["Subject"], "Re: Hermes Agent")
+            self.assertEqual(send_call["Subject"], "Re: Hermetica")
 
 
 class TestSendMethods(unittest.TestCase):

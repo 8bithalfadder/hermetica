@@ -4,7 +4,7 @@ import time
 import pytest
 from pathlib import Path
 
-from hermes_state import SessionDB
+from hermetica_state import SessionDB
 
 
 @pytest.fixture()
@@ -306,7 +306,7 @@ class TestFTS5Search:
 
     def test_sanitize_fts5_query_strips_dangerous_chars(self):
         """Unit test for _sanitize_fts5_query static method."""
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         s = SessionDB._sanitize_fts5_query
         assert s('hello world') == 'hello world'
         assert '+' not in s('C++')
@@ -323,7 +323,7 @@ class TestFTS5Search:
 
     def test_sanitize_fts5_preserves_quoted_phrases(self):
         """Properly paired double-quoted phrases should be preserved."""
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         s = SessionDB._sanitize_fts5_query
         # Simple quoted phrase
         assert s('"exact phrase"') == '"exact phrase"'
@@ -338,7 +338,7 @@ class TestFTS5Search:
 
     def test_sanitize_fts5_quotes_hyphenated_terms(self):
         """Hyphenated terms should be wrapped in quotes for exact matching."""
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         s = SessionDB._sanitize_fts5_query
         # Simple hyphenated term
         assert s('chat-send') == '"chat-send"'

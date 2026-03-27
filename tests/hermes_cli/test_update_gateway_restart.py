@@ -12,8 +12,8 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-import hermes_cli.gateway as gateway_cli
-from hermes_cli.main import cmd_update
+import hermetica_cli.gateway as gateway_cli
+from hermetica_cli.main import cmd_update
 
 
 # ---------------------------------------------------------------------------

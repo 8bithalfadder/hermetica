@@ -17,7 +17,7 @@ from unittest.mock import patch, MagicMock, PropertyMock, mock_open
 
 import pytest
 
-from hermes_cli.clipboard import (
+from hermetica_cli.clipboard import (
     save_clipboard_image,
     has_clipboard_image,
     _is_wsl,
@@ -195,7 +195,7 @@ class TestMacosOsascript:
 class TestIsWsl:
     def setup_method(self):
         # Reset cached value before each test
-        import hermes_cli.clipboard as cb
+        import hermetica_cli.clipboard as cb
         cb._wsl_detected = None
 
     def test_wsl2_detected(self):
@@ -452,7 +452,7 @@ class TestLinuxSave:
     """Test that _linux_save dispatches correctly to WSL → Wayland → X11."""
 
     def setup_method(self):
-        import hermes_cli.clipboard as cb
+        import hermetica_cli.clipboard as cb
         cb._wsl_detected = None
 
     def test_wsl_tried_first(self, tmp_path):
@@ -525,7 +525,7 @@ class TestConvertToPng:
         with patch.dict(sys.modules, {"PIL": None, "PIL.Image": None}):
             with patch("hermes_cli.clipboard.subprocess.run", side_effect=fake_run):
                 # Force ImportError for Pillow
-                import hermes_cli.clipboard as cb
+                import hermetica_cli.clipboard as cb
                 original = cb._convert_to_png
 
                 def patched_convert(path):
@@ -608,7 +608,7 @@ class TestConvertToPng:
 
 class TestHasClipboardImage:
     def setup_method(self):
-        import hermes_cli.clipboard as cb
+        import hermetica_cli.clipboard as cb
         cb._wsl_detected = None
 
     def test_macos_dispatch(self):

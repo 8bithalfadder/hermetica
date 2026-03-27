@@ -12,7 +12,7 @@ if "dotenv" not in sys.modules:
     fake_dotenv.load_dotenv = lambda *args, **kwargs: None
     sys.modules["dotenv"] = fake_dotenv
 
-from hermes_cli.auth import (
+from hermetica_cli.auth import (
     PROVIDER_REGISTRY,
     ProviderConfig,
     resolve_provider,
@@ -467,7 +467,7 @@ class TestRuntimeProviderResolution:
 
     def test_runtime_zai(self, monkeypatch):
         monkeypatch.setenv("GLM_API_KEY", "glm-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="zai")
         assert result["provider"] == "zai"
         assert result["api_mode"] == "chat_completions"
@@ -476,7 +476,7 @@ class TestRuntimeProviderResolution:
 
     def test_runtime_kimi(self, monkeypatch):
         monkeypatch.setenv("KIMI_API_KEY", "kimi-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="kimi-coding")
         assert result["provider"] == "kimi-coding"
         assert result["api_mode"] == "chat_completions"
@@ -484,14 +484,14 @@ class TestRuntimeProviderResolution:
 
     def test_runtime_minimax(self, monkeypatch):
         monkeypatch.setenv("MINIMAX_API_KEY", "mm-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="minimax")
         assert result["provider"] == "minimax"
         assert result["api_key"] == "mm-key"
 
     def test_runtime_ai_gateway(self, monkeypatch):
         monkeypatch.setenv("AI_GATEWAY_API_KEY", "gw-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="ai-gateway")
         assert result["provider"] == "ai-gateway"
         assert result["api_mode"] == "chat_completions"
@@ -500,7 +500,7 @@ class TestRuntimeProviderResolution:
 
     def test_runtime_kilocode(self, monkeypatch):
         monkeypatch.setenv("KILOCODE_API_KEY", "kilo-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="kilocode")
         assert result["provider"] == "kilocode"
         assert result["api_mode"] == "chat_completions"
@@ -509,14 +509,14 @@ class TestRuntimeProviderResolution:
 
     def test_runtime_auto_detects_api_key_provider(self, monkeypatch):
         monkeypatch.setenv("KIMI_API_KEY", "auto-kimi-key")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="auto")
         assert result["provider"] == "kimi-coding"
         assert result["api_key"] == "auto-kimi-key"
 
     def test_runtime_copilot_uses_gh_cli_token(self, monkeypatch):
         monkeypatch.setattr("hermes_cli.copilot_auth._try_gh_cli_token", lambda: "gho_cli_secret")
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
         result = resolve_runtime_provider(requested="copilot")
         assert result["provider"] == "copilot"
         assert result["api_mode"] == "chat_completions"
@@ -539,7 +539,7 @@ class TestRuntimeProviderResolution:
                 }
             ],
         )
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
 
         result = resolve_runtime_provider(requested="copilot")
 
@@ -550,7 +550,7 @@ class TestRuntimeProviderResolution:
         monkeypatch.setattr("hermes_cli.auth.shutil.which", lambda command: f"/usr/local/bin/{command}")
         monkeypatch.setenv("HERMES_COPILOT_ACP_ARGS", "--acp --stdio --debug")
 
-        from hermes_cli.runtime_provider import resolve_runtime_provider
+        from hermetica_cli.runtime_provider import resolve_runtime_provider
 
         result = resolve_runtime_provider(requested="copilot-acp")
 
@@ -569,33 +569,33 @@ class TestRuntimeProviderResolution:
 class TestHasAnyProviderConfigured:
 
     def test_glm_key_counts(self, monkeypatch, tmp_path):
-        from hermes_cli import config as config_module
+        from hermetica_cli import config as config_module
         monkeypatch.setenv("GLM_API_KEY", "test-key")
         hermes_home = tmp_path / ".hermes"
         hermes_home.mkdir()
         monkeypatch.setattr(config_module, "get_env_path", lambda: hermes_home / ".env")
         monkeypatch.setattr(config_module, "get_hermes_home", lambda: hermes_home)
-        from hermes_cli.main import _has_any_provider_configured
+        from hermetica_cli.main import _has_any_provider_configured
         assert _has_any_provider_configured() is True
 
     def test_minimax_key_counts(self, monkeypatch, tmp_path):
-        from hermes_cli import config as config_module
+        from hermetica_cli import config as config_module
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         hermes_home = tmp_path / ".hermes"
         hermes_home.mkdir()
         monkeypatch.setattr(config_module, "get_env_path", lambda: hermes_home / ".env")
         monkeypatch.setattr(config_module, "get_hermes_home", lambda: hermes_home)
-        from hermes_cli.main import _has_any_provider_configured
+        from hermetica_cli.main import _has_any_provider_configured
         assert _has_any_provider_configured() is True
 
     def test_gh_cli_token_counts(self, monkeypatch, tmp_path):
-        from hermes_cli import config as config_module
+        from hermetica_cli import config as config_module
         monkeypatch.setattr("hermes_cli.copilot_auth._try_gh_cli_token", lambda: "gho_cli_secret")
         hermes_home = tmp_path / ".hermes"
         hermes_home.mkdir()
         monkeypatch.setattr(config_module, "get_env_path", lambda: hermes_home / ".env")
         monkeypatch.setattr(config_module, "get_hermes_home", lambda: hermes_home)
-        from hermes_cli.main import _has_any_provider_configured
+        from hermetica_cli.main import _has_any_provider_configured
         assert _has_any_provider_configured() is True
 
 
@@ -691,20 +691,20 @@ class TestKimiMoonshotModelListIsolation:
     """Moonshot (legacy) users must not see Coding Plan-only models."""
 
     def test_moonshot_list_excludes_coding_plan_only_models(self):
-        from hermes_cli.main import _PROVIDER_MODELS
+        from hermetica_cli.main import _PROVIDER_MODELS
         moonshot_models = _PROVIDER_MODELS["moonshot"]
         coding_plan_only = {"kimi-for-coding", "kimi-k2-thinking-turbo"}
         leaked = set(moonshot_models) & coding_plan_only
         assert not leaked, f"Moonshot list contains Coding Plan-only models: {leaked}"
 
     def test_moonshot_list_contains_shared_models(self):
-        from hermes_cli.main import _PROVIDER_MODELS
+        from hermetica_cli.main import _PROVIDER_MODELS
         moonshot_models = _PROVIDER_MODELS["moonshot"]
         assert "kimi-k2.5" in moonshot_models
         assert "kimi-k2-thinking" in moonshot_models
 
     def test_coding_plan_list_contains_plan_specific_models(self):
-        from hermes_cli.main import _PROVIDER_MODELS
+        from hermetica_cli.main import _PROVIDER_MODELS
         coding_models = _PROVIDER_MODELS["kimi-coding"]
         assert "kimi-for-coding" in coding_models
         assert "kimi-k2-thinking-turbo" in coding_models

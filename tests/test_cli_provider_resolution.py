@@ -4,8 +4,8 @@ import types
 from contextlib import nullcontext
 from types import SimpleNamespace
 
-from hermes_cli.auth import AuthError
-from hermes_cli import main as hermes_main
+from hermetica_cli.auth import AuthError
+from hermetica_cli import main as hermes_main
 
 
 def _install_prompt_toolkit_stubs():

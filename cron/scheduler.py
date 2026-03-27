@@ -28,7 +28,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from hermes_time import now as _hermes_now
+from hermetica_time import now as _hermes_now
 
 logger = logging.getLogger(__name__)
 
@@ -271,7 +271,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
     # and discoverable via session_search (same pattern as gateway/run.py).
     _session_db = None
     try:
-        from hermes_state import SessionDB
+        from hermetica_state import SessionDB
         _session_db = SessionDB()
     except Exception as e:
         logger.debug("Job '%s': SQLite session store not available: %s", job.get("id", "?"), e)
@@ -363,7 +363,7 @@ def run_job(job: dict) -> tuple[bool, str, str, Optional[str]]:
         pr = _cfg.get("provider_routing", {})
         smart_routing = _cfg.get("smart_model_routing", {}) or {}
 
-        from hermes_cli.runtime_provider import (
+        from hermetica_cli.runtime_provider import (
             resolve_runtime_provider,
             format_runtime_provider_error,
         )

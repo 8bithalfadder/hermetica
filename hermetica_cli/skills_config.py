@@ -1,5 +1,5 @@
 """
-Skills configuration for Hermes Agent.
+Skills configuration for Hermetica.
 `hermes skills` enters this module.
 
 Toggle individual skills or categories on/off, globally or per-platform.
@@ -13,8 +13,8 @@ Config stored in ~/.hermes/config.yaml under:
 """
 from typing import Dict, List, Optional, Set
 
-from hermes_cli.config import load_config, save_config
-from hermes_cli.colors import Colors, color
+from hermetica_cli.config import load_config, save_config
+from hermetica_cli.colors import Colors, color
 
 PLATFORMS = {
     "cli":      "🖥️  CLI",
@@ -97,7 +97,7 @@ def _select_platform() -> Optional[str]:
 
 def _toggle_by_category(skills: List[dict], disabled: Set[str]) -> Set[str]:
     """Toggle all skills in a category at once."""
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     categories = _get_categories(skills)
     cat_labels = []
@@ -128,7 +128,7 @@ def _toggle_by_category(skills: List[dict], disabled: Set[str]) -> Set[str]:
 
 def skills_command(args=None):
     """Entry point for `hermes skills`."""
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     config = load_config()
     skills = _list_all_skills()

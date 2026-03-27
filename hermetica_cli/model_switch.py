@@ -70,13 +70,13 @@ def switch_model(
         ModelSwitchResult with all information the caller needs to
         apply the switch and format output.
     """
-    from hermes_cli.models import (
+    from hermetica_cli.models import (
         parse_model_input,
         detect_provider_for_model,
         validate_requested_model,
         _PROVIDER_LABELS,
     )
-    from hermes_cli.runtime_provider import resolve_runtime_provider
+    from hermetica_cli.runtime_provider import resolve_runtime_provider
 
     # Step 1: Parse provider:model syntax
     target_provider, new_model = parse_model_input(raw_input, current_provider)
@@ -187,7 +187,7 @@ def switch_to_custom_provider() -> CustomAutoResult:
 
     Returns a result object; the caller handles persistence and output.
     """
-    from hermes_cli.runtime_provider import (
+    from hermetica_cli.runtime_provider import (
         resolve_runtime_provider,
         _auto_detect_local_model,
     )

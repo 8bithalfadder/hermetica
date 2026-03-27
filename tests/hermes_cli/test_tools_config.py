@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from hermes_cli.tools_config import (
+from hermetica_cli.tools_config import (
     _get_platform_tools,
     _platform_toolset_summary,
     _save_platform_tools,

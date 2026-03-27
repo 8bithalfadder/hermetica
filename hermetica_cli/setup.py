@@ -1,5 +1,5 @@
 """
-Interactive setup wizard for Hermes Agent.
+Interactive setup wizard for Hermetica.
 
 Modular wizard with independently-runnable sections:
   1. Model & Provider — choose your AI provider and model
@@ -106,7 +106,7 @@ def _setup_copilot_reasoning_selection(
     catalog: Optional[list[dict[str, Any]]] = None,
     api_key: str = "",
 ) -> None:
-    from hermes_cli.models import github_model_reasoning_efforts, normalize_copilot_model_id
+    from hermetica_cli.models import github_model_reasoning_efforts, normalize_copilot_model_id
 
     normalized_model = normalize_copilot_model_id(
         model_id,
@@ -143,9 +143,9 @@ def _setup_provider_model_selection(config, provider_id, current_model, prompt_c
     hardcoded default list with a warning if the endpoint is unreachable.
     Always offers a 'Custom model' escape hatch.
     """
-    from hermes_cli.auth import PROVIDER_REGISTRY, resolve_api_key_provider_credentials
-    from hermes_cli.config import get_env_value
-    from hermes_cli.models import (
+    from hermetica_cli.auth import PROVIDER_REGISTRY, resolve_api_key_provider_credentials
+    from hermetica_cli.config import get_env_value
+    from hermetica_cli.models import (
         copilot_model_api_mode,
         fetch_api_models,
         fetch_github_model_catalog,
@@ -274,7 +274,7 @@ def _sync_model_from_disk(config: Dict[str, Any]) -> None:
 
 
 # Import config helpers
-from hermes_cli.config import (
+from hermetica_cli.config import (
     get_hermes_home,
     get_config_path,
     get_env_path,
@@ -286,7 +286,7 @@ from hermes_cli.config import (
     DEFAULT_CONFIG,
 )
 
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 
 def print_header(title: str):
@@ -515,7 +515,7 @@ def prompt_checklist(title: str, items: list, pre_selected: list = None) -> list
     if pre_selected is None:
         pre_selected = []
 
-    from hermes_cli.curses_ui import curses_checklist
+    from hermetica_cli.curses_ui import curses_checklist
 
     chosen = curses_checklist(
         title,
@@ -796,7 +796,7 @@ def _prompt_container_resources(config: dict):
 
 def setup_model_provider(config: dict):
     """Configure the inference provider and default model."""
-    from hermes_cli.auth import (
+    from hermetica_cli.auth import (
         get_active_provider,
         get_provider_auth_state,
         PROVIDER_REGISTRY,
@@ -929,7 +929,7 @@ def setup_model_provider(config: dict):
         # Update config.yaml and deactivate any OAuth provider so the
         # resolver doesn't keep returning the old provider (e.g. Codex).
         try:
-            from hermes_cli.auth import deactivate_provider
+            from hermetica_cli.auth import deactivate_provider
 
             deactivate_provider()
         except Exception:
@@ -964,7 +964,7 @@ def setup_model_provider(config: dict):
         # Reuse the shared custom endpoint flow from `hermes model`.
         # This handles: URL/key/model/context-length prompts, endpoint probing,
         # env saving, config.yaml updates, and custom_providers persistence.
-        from hermes_cli.main import _model_flow_custom
+        from hermetica_cli.main import _model_flow_custom
         _model_flow_custom(config)
         # _model_flow_custom handles model selection, config, env vars,
         # and custom_providers. Keep selected_provider = "custom" so
@@ -975,8 +975,8 @@ def setup_model_provider(config: dict):
         selected_provider = "anthropic"
         print()
         print_header("Anthropic Authentication")
-        from hermes_cli.auth import PROVIDER_REGISTRY
-        from hermes_cli.config import save_anthropic_api_key, save_anthropic_oauth_token
+        from hermetica_cli.auth import PROVIDER_REGISTRY
+        from hermetica_cli.config import save_anthropic_api_key, save_anthropic_oauth_token
         pconfig = PROVIDER_REGISTRY["anthropic"]
 
         # Check ALL credential sources
@@ -1251,7 +1251,7 @@ def setup_model_provider(config: dict):
             if custom:
                 _set_default_model(config, custom)
         elif selected_provider == "openai-codex":
-            from hermes_cli.codex_models import get_codex_model_ids
+            from hermetica_cli.codex_models import get_codex_model_ids
 
             codex_token = None
             try:
@@ -1295,7 +1295,7 @@ def setup_model_provider(config: dict):
             )
         elif selected_provider == "anthropic":
             # Try live model list first, fall back to static
-            from hermes_cli.models import provider_model_ids
+            from hermetica_cli.models import provider_model_ids
             live_models = provider_model_ids("anthropic")
             anthropic_models = live_models if live_models else [
                 "claude-opus-4-6",
@@ -1318,7 +1318,7 @@ def setup_model_provider(config: dict):
             # else: keep current
         else:
             # Static list for OpenRouter / fallback (from canonical list)
-            from hermes_cli.models import model_ids, menu_labels
+            from hermetica_cli.models import model_ids, menu_labels
 
             ids = model_ids()
             model_choices = menu_labels() + [
@@ -2450,7 +2450,7 @@ def setup_gateway(config: dict):
         _is_linux = _platform.system() == "Linux"
         _is_macos = _platform.system() == "Darwin"
 
-        from hermes_cli.gateway import (
+        from hermetica_cli.gateway import (
             _is_service_installed,
             _is_service_running,
             has_conflicting_systemd_units,
@@ -2542,7 +2542,7 @@ def setup_tools(config: dict, first_install: bool = False):
         first_install: When True, uses the simplified first-install flow
             (no platform menu, prompts for all unconfigured API keys).
     """
-    from hermes_cli.tools_config import tools_command
+    from hermetica_cli.tools_config import tools_command
 
     tools_command(first_install=first_install, config=config)
 
@@ -2726,7 +2726,7 @@ def run_setup_wizard(args):
         return
 
     # Check if this is an existing installation with a provider configured
-    from hermes_cli.auth import get_active_provider
+    from hermetica_cli.auth import get_active_provider
 
     active_provider = get_active_provider()
     is_existing = (
@@ -2744,7 +2744,7 @@ def run_setup_wizard(args):
     )
     print(
         color(
-            "│             ⚕ Hermes Agent Setup Wizard                │", Colors.MAGENTA
+            "│             ⚕ Hermetica Setup Wizard                │", Colors.MAGENTA
         )
     )
     print(
@@ -2755,7 +2755,7 @@ def run_setup_wizard(args):
     )
     print(
         color(
-            "│  Let's configure your Hermes Agent installation.       │", Colors.MAGENTA
+            "│  Let's configure your Hermetica installation.       │", Colors.MAGENTA
         )
     )
     print(
@@ -2869,7 +2869,7 @@ def run_setup_wizard(args):
 
 def _run_quick_setup(config: dict, hermes_home):
     """Quick setup — only configure items that are missing."""
-    from hermes_cli.config import (
+    from hermetica_cli.config import (
         get_missing_env_vars,
         get_missing_config_fields,
         check_config_version,

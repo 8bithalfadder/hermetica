@@ -43,7 +43,7 @@ class TestSetupProviderModelSelection:
         """Previously this code path raised NameError: 'is_coding_plan'.
         Now it delegates to _setup_provider_model_selection which uses
         _DEFAULT_PROVIDER_MODELS -- no crash, correct model list."""
-        from hermes_cli.setup import _setup_provider_model_selection
+        from hermetica_cli.setup import _setup_provider_model_selection
 
         captured_choices = {}
 
@@ -72,7 +72,7 @@ class TestSetupProviderModelSelection:
         self, mock_env, mock_fetch, mock_provider_registry
     ):
         """When fetch_api_models returns results, those are used instead of defaults."""
-        from hermes_cli.setup import _setup_provider_model_selection
+        from hermetica_cli.setup import _setup_provider_model_selection
 
         live = ["live-model-1", "live-model-2"]
         mock_fetch.return_value = live
@@ -102,7 +102,7 @@ class TestSetupProviderModelSelection:
         self, mock_env, mock_fetch, mock_provider_registry
     ):
         """Selecting 'Custom model' lets user type a model name."""
-        from hermes_cli.setup import _setup_provider_model_selection, _DEFAULT_PROVIDER_MODELS
+        from hermetica_cli.setup import _setup_provider_model_selection, _DEFAULT_PROVIDER_MODELS
 
         defaults = _DEFAULT_PROVIDER_MODELS["zai"]
         custom_model_idx = len(defaults)  # "Custom model" is right after defaults

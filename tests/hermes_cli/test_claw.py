@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from hermes_cli import claw as claw_mod
+from hermetica_cli import claw as claw_mod
 
 
 # ---------------------------------------------------------------------------

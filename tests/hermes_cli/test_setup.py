@@ -1,8 +1,8 @@
 import json
 
-from hermes_cli.auth import _update_config_for_provider, get_active_provider
-from hermes_cli.config import load_config, save_config
-from hermes_cli.setup import setup_model_provider
+from hermetica_cli.auth import _update_config_for_provider, get_active_provider
+from hermetica_cli.config import load_config, save_config
+from hermetica_cli.setup import setup_model_provider
 
 
 def _maybe_keep_current_tts(question, choices):

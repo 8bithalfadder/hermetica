@@ -302,7 +302,7 @@ def list_available_providers() -> list[dict[str, str]]:
         # Check if this provider has credentials available
         has_creds = False
         try:
-            from hermes_cli.auth import get_auth_status, has_usable_secret
+            from hermetica_cli.auth import get_auth_status, has_usable_secret
             if pid == "custom":
                 custom_base_url = _get_custom_base_url() or os.getenv("OPENAI_BASE_URL", "")
                 has_creds = bool(custom_base_url.strip())
@@ -361,7 +361,7 @@ def parse_model_input(raw: str, current_provider: str) -> tuple[str, str]:
 def _get_custom_base_url() -> str:
     """Get the custom endpoint base_url from config.yaml."""
     try:
-        from hermes_cli.config import load_config
+        from hermetica_cli.config import load_config
         config = load_config()
         model_cfg = config.get("model", {})
         if isinstance(model_cfg, dict):
@@ -450,7 +450,7 @@ def detect_provider_for_model(
         # Check if we have credentials for this provider
         has_creds = False
         try:
-            from hermes_cli.auth import PROVIDER_REGISTRY
+            from hermetica_cli.auth import PROVIDER_REGISTRY
             pconfig = PROVIDER_REGISTRY.get(direct_match)
             if pconfig:
                 import os
@@ -537,7 +537,7 @@ def provider_label(provider: Optional[str]) -> str:
 def _resolve_copilot_catalog_api_key() -> str:
     """Best-effort GitHub token for fetching the Copilot model catalog."""
     try:
-        from hermes_cli.auth import resolve_api_key_provider_credentials
+        from hermetica_cli.auth import resolve_api_key_provider_credentials
 
         creds = resolve_api_key_provider_credentials("copilot")
         return str(creds.get("api_key") or "").strip()
@@ -555,7 +555,7 @@ def provider_model_ids(provider: Optional[str]) -> list[str]:
     if normalized == "openrouter":
         return model_ids()
     if normalized == "openai-codex":
-        from hermes_cli.codex_models import get_codex_model_ids
+        from hermetica_cli.codex_models import get_codex_model_ids
 
         return get_codex_model_ids()
     if normalized in {"copilot", "copilot-acp"}:
@@ -570,7 +570,7 @@ def provider_model_ids(provider: Optional[str]) -> list[str]:
     if normalized == "nous":
         # Try live Nous Portal /models endpoint
         try:
-            from hermes_cli.auth import fetch_nous_models, resolve_nous_runtime_credentials
+            from hermetica_cli.auth import fetch_nous_models, resolve_nous_runtime_credentials
             creds = resolve_nous_runtime_credentials()
             if creds:
                 live = fetch_nous_models(api_key=creds.get("api_key", ""), inference_base_url=creds.get("base_url", ""))
@@ -666,7 +666,7 @@ def copilot_default_headers() -> dict[str, str]:
     Copilot CLI send on every request.
     """
     try:
-        from hermes_cli.copilot_auth import copilot_request_headers
+        from hermetica_cli.copilot_auth import copilot_request_headers
         return copilot_request_headers(is_agent_turn=True)
     except ImportError:
         return {
@@ -1020,7 +1020,7 @@ def _fetch_ai_gateway_models(timeout: float = 5.0) -> Optional[list[str]]:
         return None
     base_url = os.getenv("AI_GATEWAY_BASE_URL", "").strip()
     if not base_url:
-        from hermes_constants import AI_GATEWAY_BASE_URL
+        from hermetica_constants import AI_GATEWAY_BASE_URL
         base_url = AI_GATEWAY_BASE_URL
 
     url = base_url.rstrip("/") + "/models"

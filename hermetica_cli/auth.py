@@ -1,5 +1,5 @@
 """
-Multi-provider authentication system for Hermes Agent.
+Multi-provider authentication system for Hermetica.
 
 Supports OAuth device code flows (Nous Portal, future: OpenAI Codex) and
 traditional API key providers (OpenRouter, custom endpoints). Auth state
@@ -37,8 +37,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 import yaml
 
-from hermes_cli.config import get_hermes_home, get_config_path
-from hermes_constants import OPENROUTER_BASE_URL
+from hermetica_cli.config import get_hermes_home, get_config_path
+from hermetica_constants import OPENROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -312,7 +312,7 @@ def _resolve_api_key_provider_secret(
     if provider_id == "copilot":
         # Use the dedicated copilot auth module for proper token validation
         try:
-            from hermes_cli.copilot_auth import resolve_copilot_token
+            from hermetica_cli.copilot_auth import resolve_copilot_token
             token, source = resolve_copilot_token()
             if token:
                 return token, source
@@ -1941,7 +1941,7 @@ def _save_model_choice(model_id: str) -> None:
     The model is stored in config.yaml only — NOT in .env.  This avoids
     conflicts in multi-agent setups where env vars would stomp each other.
     """
-    from hermes_cli.config import save_config, load_config
+    from hermetica_cli.config import save_config, load_config
 
     config = load_config()
     # Always use dict format so provider/base_url can be stored alongside

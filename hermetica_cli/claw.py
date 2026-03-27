@@ -11,8 +11,8 @@ import logging
 import sys
 from pathlib import Path
 
-from hermes_cli.config import get_hermes_home, get_config_path, load_config, save_config
-from hermes_cli.setup import (
+from hermetica_cli.config import get_hermes_home, get_config_path, load_config, save_config
+from hermetica_cli.setup import (
     Colors,
     color,
     print_header,

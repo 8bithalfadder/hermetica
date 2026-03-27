@@ -16,7 +16,7 @@ class TestHandleSkillsSlashInstallFlags:
     """Test flag parsing in handle_skills_slash for install."""
 
     def test_yes_flag_sets_skip_confirm(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_install") as mock_install:
             handle_skills_slash("/skills install test/skill --yes")
             mock_install.assert_called_once()
@@ -25,7 +25,7 @@ class TestHandleSkillsSlashInstallFlags:
             assert kwargs.get("force") is False
 
     def test_y_flag_sets_skip_confirm(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_install") as mock_install:
             handle_skills_slash("/skills install test/skill -y")
             mock_install.assert_called_once()
@@ -33,7 +33,7 @@ class TestHandleSkillsSlashInstallFlags:
             assert kwargs.get("skip_confirm") is True
 
     def test_force_flag_sets_force_not_skip(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_install") as mock_install:
             handle_skills_slash("/skills install test/skill --force")
             mock_install.assert_called_once()
@@ -42,7 +42,7 @@ class TestHandleSkillsSlashInstallFlags:
             assert kwargs.get("skip_confirm") is False
 
     def test_no_flags(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_install") as mock_install:
             handle_skills_slash("/skills install test/skill")
             mock_install.assert_called_once()
@@ -55,7 +55,7 @@ class TestHandleSkillsSlashUninstallFlags:
     """Test flag parsing in handle_skills_slash for uninstall."""
 
     def test_yes_flag_sets_skip_confirm(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_uninstall") as mock_uninstall:
             handle_skills_slash("/skills uninstall test-skill --yes")
             mock_uninstall.assert_called_once()
@@ -63,7 +63,7 @@ class TestHandleSkillsSlashUninstallFlags:
             assert kwargs.get("skip_confirm") is True
 
     def test_y_flag_sets_skip_confirm(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_uninstall") as mock_uninstall:
             handle_skills_slash("/skills uninstall test-skill -y")
             mock_uninstall.assert_called_once()
@@ -71,7 +71,7 @@ class TestHandleSkillsSlashUninstallFlags:
             assert kwargs.get("skip_confirm") is True
 
     def test_no_flags(self):
-        from hermes_cli.skills_hub import handle_skills_slash
+        from hermetica_cli.skills_hub import handle_skills_slash
         with patch("hermes_cli.skills_hub.do_uninstall") as mock_uninstall:
             handle_skills_slash("/skills uninstall test-skill")
             mock_uninstall.assert_called_once()
@@ -85,7 +85,7 @@ class TestDoInstallSkipConfirm:
     @patch("hermes_cli.skills_hub.input", return_value="n")
     def test_without_skip_confirm_prompts_user(self, mock_input):
         """Without skip_confirm, input() is called for confirmation."""
-        from hermes_cli.skills_hub import do_install
+        from hermetica_cli.skills_hub import do_install
         with patch("hermes_cli.skills_hub._console"), \
              patch("tools.skills_hub.ensure_hub_dirs"), \
              patch("tools.skills_hub.GitHubAuth"), \
@@ -105,7 +105,7 @@ class TestDoUninstallSkipConfirm:
 
     def test_skip_confirm_bypasses_input(self):
         """With skip_confirm=True, input() should not be called."""
-        from hermes_cli.skills_hub import do_uninstall
+        from hermetica_cli.skills_hub import do_uninstall
         with patch("hermes_cli.skills_hub._console") as mock_console, \
              patch("tools.skills_hub.uninstall_skill", return_value=(True, "Removed")) as mock_uninstall, \
              patch("builtins.input") as mock_input:
@@ -115,7 +115,7 @@ class TestDoUninstallSkipConfirm:
 
     def test_without_skip_confirm_calls_input(self):
         """Without skip_confirm, input() should be called."""
-        from hermes_cli.skills_hub import do_uninstall
+        from hermetica_cli.skills_hub import do_uninstall
         with patch("hermes_cli.skills_hub._console"), \
              patch("tools.skills_hub.uninstall_skill", return_value=(True, "Removed")), \
              patch("builtins.input", return_value="y") as mock_input:
@@ -124,7 +124,7 @@ class TestDoUninstallSkipConfirm:
 
     def test_without_skip_confirm_cancel(self):
         """Without skip_confirm, answering 'n' should cancel."""
-        from hermes_cli.skills_hub import do_uninstall
+        from hermetica_cli.skills_hub import do_uninstall
         with patch("hermes_cli.skills_hub._console"), \
              patch("tools.skills_hub.uninstall_skill") as mock_uninstall, \
              patch("builtins.input", return_value="n"):

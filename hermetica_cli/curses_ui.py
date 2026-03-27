@@ -6,7 +6,7 @@ text-based numbered fallback for terminals without curses support.
 """
 from typing import List, Set
 
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 
 def curses_checklist(

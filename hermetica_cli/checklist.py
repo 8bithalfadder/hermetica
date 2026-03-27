@@ -7,7 +7,7 @@ curses is unavailable (Windows without curses, piped stdin, etc.).
 
 from typing import List, Set
 
-from hermes_cli.colors import Colors, color
+from hermetica_cli.colors import Colors, color
 
 
 def curses_checklist(
