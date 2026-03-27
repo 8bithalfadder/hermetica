@@ -631,6 +631,24 @@ Write only the summary body. Do not include any preamble or prefix."""
         else:
             if not self.quiet_mode:
                 logger.warning("No summary model available — middle turns dropped without summary")
+            # Clear iterative state: we're dropping turns without recording
+            # them, so the previous summary is now a gap in history.  The next
+            # successful compression must start fresh rather than building an
+            # "iterative update" on top of a state that predates the dropped turns.
+            self._previous_summary = None
+            # Also fix potential consecutive same-role messages now that no
+            # summary message is being inserted between head and tail.
+            if compress_start > 0 and compress_end < n_messages:
+                last_head_role = messages[compress_start - 1].get("role", "user")
+                first_tail_role = messages[compress_end].get("role", "user")
+                if last_head_role == first_tail_role and last_head_role in ("user", "assistant"):
+                    # Insert a minimal bridge message so the API doesn't reject
+                    # consecutive same-role messages.
+                    bridge_role = "assistant" if last_head_role == "user" else "user"
+                    compressed.append({
+                        "role": bridge_role,
+                        "content": "[Earlier conversation turns were removed to stay within context limits.]",
+                    })
 
         for i in range(compress_end, n_messages):
             msg = messages[i].copy()

@@ -422,7 +422,8 @@ def get_hermes_cli_path() -> str:
 
 def generate_systemd_unit(system: bool = False, run_as_user: str | None = None) -> str:
     python_path = get_python_path()
-    working_dir = str(PROJECT_ROOT)
+    working_dir = str(Path.home())
+    messaging_cwd = str(PROJECT_ROOT)
     detected_venv = _detect_venv_dir()
     venv_dir = str(detected_venv) if detected_venv else str(PROJECT_ROOT / "venv")
     venv_bin = str(detected_venv / "bin") if detected_venv else str(PROJECT_ROOT / "venv" / "bin")
@@ -460,6 +461,7 @@ Environment="LOGNAME={username}"
 Environment="PATH={sane_path}"
 Environment="VIRTUAL_ENV={venv_dir}"
 Environment="HERMES_HOME={hermes_home}"
+Environment="MESSAGING_CWD={messaging_cwd}"
 Restart=on-failure
 RestartSec=30
 KillMode=mixed
@@ -485,6 +487,7 @@ WorkingDirectory={working_dir}
 Environment="PATH={sane_path}"
 Environment="VIRTUAL_ENV={venv_dir}"
 Environment="HERMES_HOME={hermes_home}"
+Environment="MESSAGING_CWD={messaging_cwd}"
 Restart=on-failure
 RestartSec=30
 KillMode=mixed
